@@ -14,6 +14,17 @@ public class Book {
     private int year;
     private int edition;
 
+    @Override
+    public String toString() {
+        return "Book{" +
+                "title='" + title + '\'' +
+                ", firstNameAuthor='" + firstNameAuthor + '\'' +
+                ", lastNameAuthor='" + lastNameAuthor + '\'' +
+                ", year=" + year +
+                ", edition=" + edition +
+                '}';
+    }
+
     public Book(String name, String firstNameAuthor, String lastNameAuthor, int year, int edition) {
         this.title = name;
         this.firstNameAuthor = firstNameAuthor;
