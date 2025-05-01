@@ -5,6 +5,8 @@ package com.homelib.entities;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 public class Book {
@@ -13,6 +15,7 @@ public class Book {
     private String lastNameAuthor;
     private int year;
     private int edition;
+    private UUID id;
 
     @Override
     public String toString() {
@@ -22,6 +25,7 @@ public class Book {
                 ", lastNameAuthor='" + lastNameAuthor + '\'' +
                 ", year=" + year +
                 ", edition=" + edition +
+                ", id=" + id +
                 '}';
     }
 
@@ -31,6 +35,7 @@ public class Book {
         this.lastNameAuthor = lastNameAuthor;
         this.year = year;
         this.edition = edition;
+        this.id = UUID.randomUUID();
     }
 
     public static final class BookBuilder{
