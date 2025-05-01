@@ -21,4 +21,5 @@ public class GlobalStore {
     public List<Book> getData() {
         return data;
     }
+
 }
