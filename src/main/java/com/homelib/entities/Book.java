@@ -38,6 +38,10 @@ public class Book {
         this.id = id;
     }
 
+    public String getAuthor() {
+        return firstNameAuthor + " " + lastNameAuthor;
+    }
+
 
     public static final class BookBuilder{
         private String title;
