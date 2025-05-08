@@ -18,18 +18,34 @@ public class BookService {
         BookRepository.saveToDatabase(book);
     }
 
-    public static List<Book> findAll(){
+    public static void findAll(){
+        System.out.printf(
+                "+----------------------------+-------------------------------+------+---------+--------------------------------------+\n");
+        System.out.printf(
+                "| %-26s | %-29s | %-4s | %-7s | %-36s |\n",
+                "Título", "Autor", "Ano", "Edição", "ID");
+        System.out.printf(
+                "+----------------------------+-------------------------------+------+---------+--------------------------------------+\n");
         List<Book> bookList = new ArrayList<>(BookRepository.findAllBooks());
-        return bookList;
+        for (Book book: bookList){
+            System.out.printf("| %-26s | %-29s | %-4d | %-7s | %-36s |\n", book.getTitle(), book.getAuthor(), book.getYear(), book.getEdition(), book.getId().toString() );
+
+        }
+        System.out.print("----------------------------------------------------------------------------------------------------------------------\n");
+        //return bookList;
     }
 
-    public static void findById(UUID id){
+    public static void findById(){
+        System.out.println("Insert book id: ");
+        UUID id = UUID.fromString(SCANNER.nextLine());
         Optional<Book> bookFromDb = BookRepository.findById(id);
         if(bookFromDb.isEmpty()){
             System.out.println("No such identifier");
+            return;
         }
+        Book book = bookFromDb.get();
 
-        System.out.println(bookFromDb.toString());
+        System.out.println(book);
     }
 
     public static void createNewBook(){
