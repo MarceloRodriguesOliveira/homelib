@@ -29,14 +29,13 @@ public class Main {
                 .edition(1)
                 .build();
         BookService.save(book);
-        //System.out.println(book);
         while (true){
             menu.options();
             menuOption = Integer.parseInt(SCANNER.nextLine());
             if(menuOption == 0){break;}
             switch (menuOption){
-                case 1 -> BookRepository.findAllBooks().toString();
-                case 2 -> BookService.findById(book.getId());
+                case 1 -> BookService.findAll();
+                case 2 -> BookService.findById();
                 case 3 -> BookService.createNewBook();
             }
         }
