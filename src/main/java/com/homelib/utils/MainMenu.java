@@ -1,0 +1,11 @@
+package com.homelib.utils;
+
+public class MainMenu implements Menu {
+    @Override
+    public void options() {
+        System.out.println("1. Listar todos os livros via service");
+        System.out.println("2. Buscar livro via identificador");
+        System.out.println("3. Registrar novo livro");
+        System.out.println("0. Sair do programa");
+    }
+}
