@@ -5,7 +5,7 @@ import java.util.List;
 
 public class GlobalStore {
     private static GlobalStore instance;
-    private List<Book> data;
+    private final List<Book> data;
 
     public GlobalStore() {
         data = new ArrayList<>();
