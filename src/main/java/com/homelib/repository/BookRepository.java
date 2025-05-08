@@ -16,13 +16,11 @@ public class BookRepository {
     }
 
     public static List<Book> findAllBooks(){
-        System.out.println(GlobalStore.getInstance().getData());
         return GlobalStore.getInstance().getData();
     }
 
     public static Optional<Book> findById(UUID targetID){
         List<Book> books = GlobalStore.getInstance().getData();
-        //Book targetBook;
         for (Book book:books){
             if(book.getId().equals(targetID)){
                 Book targetBook = Book.BookBuilder
@@ -34,7 +32,7 @@ public class BookRepository {
                         .edition(book.getEdition())
                         .id(book.getId())
                         .build();
-                System.out.println(book);
+                log.info("found '{}' by {}, {} ", targetBook.getTitle(), targetBook.getLastNameAuthor(), targetBook.getFirstNameAuthor());
                 return Optional.of(targetBook);
             }
         }
