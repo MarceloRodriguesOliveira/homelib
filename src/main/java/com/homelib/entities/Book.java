@@ -15,7 +15,7 @@ public class Book {
     private String lastNameAuthor;
     private int year;
     private int edition;
-    private UUID id;
+    private final UUID id;
 
     @Override
     public String toString() {
@@ -29,14 +29,15 @@ public class Book {
                 '}';
     }
 
-    public Book(String name, String firstNameAuthor, String lastNameAuthor, int year, int edition) {
+    private Book(String name, String firstNameAuthor, String lastNameAuthor, int year, int edition, UUID id) {
         this.title = name;
         this.firstNameAuthor = firstNameAuthor;
         this.lastNameAuthor = lastNameAuthor;
         this.year = year;
         this.edition = edition;
-        this.id = UUID.randomUUID();
+        this.id = id;
     }
+
 
     public static final class BookBuilder{
         private String title;
@@ -44,6 +45,7 @@ public class Book {
         private String lastNameAuthor;
         private int year;
         private int edition;
+        private UUID id;
 
         public BookBuilder() {
         }
@@ -57,28 +59,36 @@ public class Book {
             return this;
         }
 
-        public BookBuilder FirstNameAuthor(String firstNameAuthor) {
+        public BookBuilder firstNameAuthor(String firstNameAuthor) {
             this.firstNameAuthor = firstNameAuthor;
             return this;
         }
 
-        public BookBuilder LastNameAuthor(String lastNameAuthor) {
+        public BookBuilder lastNameAuthor(String lastNameAuthor) {
             this.lastNameAuthor = lastNameAuthor;
             return this;
         }
 
-        public BookBuilder Year(int year) {
+        public BookBuilder year(int year) {
             this.year = year;
             return this;
         }
 
-        public BookBuilder Edition(int edition) {
+        public BookBuilder edition(int edition) {
             this.edition = edition;
             return this;
         }
 
+        public BookBuilder id(UUID id){
+            this.id = id;
+            return this;
+        }
+
+
+
         public Book build(){
-            return new Book(title, firstNameAuthor, lastNameAuthor, year, edition);
+            UUID finalId = (this.id != null) ? this.id : UUID.randomUUID();
+            return new Book(title, firstNameAuthor, lastNameAuthor, year, edition, finalId );
         }
 
 
