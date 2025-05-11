@@ -19,12 +19,12 @@ public class BookService {
     }
 
     public static void findAll(){
-        System.out.printf(
+        System.out.print(
                 "+----------------------------+-------------------------------+------+---------+--------------------------------------+\n");
         System.out.printf(
                 "| %-26s | %-29s | %-4s | %-7s | %-36s |\n",
                 "Título", "Autor", "Ano", "Edição", "ID");
-        System.out.printf(
+        System.out.print(
                 "+----------------------------+-------------------------------+------+---------+--------------------------------------+\n");
         List<Book> bookList = new ArrayList<>(BookRepository.findAllBooks());
         for (Book book: bookList){
@@ -32,17 +32,25 @@ public class BookService {
 
         }
         System.out.print("----------------------------------------------------------------------------------------------------------------------\n");
-        //return bookList;
     }
 
     public static void findById(){
-        System.out.println("Insert book id: ");
-        UUID id = UUID.fromString(SCANNER.nextLine());
+        UUID id = null;
+        while (id == null){
+            System.out.print("Insert book id: ");
+            try {
+                id = UUID.fromString(SCANNER.nextLine());
+            }catch (IllegalArgumentException e){
+                System.out.println("Id não está no formato adequado. Tentando novamente...");
+            }
+        }
+
         Optional<Book> bookFromDb = BookRepository.findById(id);
         if(bookFromDb.isEmpty()){
             System.out.println("No such identifier");
             return;
         }
+
         Book book = bookFromDb.get();
 
         System.out.println(book);
@@ -72,6 +80,13 @@ public class BookService {
         log.info("saving '{}' by {}, {} ", title, lastName, firstName );
         System.out.println(createBook.toString());
         BookRepository.saveToDatabase(createBook);
+    }
+
+    public static void deleteBookById(){
+        System.out.println("Type the identification of the book: ");
+        UUID id = UUID.fromString(SCANNER.nextLine());
+        BookRepository.deleteBookById(id);
+
     }
 
 
