@@ -3,6 +3,7 @@ package com.homelib.repository;
 
 import com.homelib.entities.Book;
 import com.homelib.entities.GlobalStore;
+import com.homelib.service.BookService;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.List;
@@ -37,6 +38,18 @@ public class BookRepository {
             }
         }
         return Optional.empty();
+    }
+
+    public static void deleteBookById(UUID searchId){
+        Optional<Book> bookFromDb = findById(searchId);
+        if (bookFromDb.isPresent()){
+            Book book = bookFromDb.get();
+            GlobalStore.getInstance().getData().removeIf(b -> b.getId().equals(searchId));
+            System.out.println("Deleted book of Id: " + searchId);
+            return;
+        }
+        log.info("Id is not present on any book register");
+
     }
 
 
