@@ -37,6 +37,7 @@ public class Main {
                 case 1 -> BookService.findAll();
                 case 2 -> BookService.findById();
                 case 3 -> BookService.createNewBook();
+                case 4 -> BookService.deleteBookById();
             }
         }
 
