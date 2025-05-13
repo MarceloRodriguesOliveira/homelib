@@ -15,10 +15,12 @@ import java.util.UUID;
 public class BookService {
     private static final Scanner SCANNER = new Scanner(System.in);
     public static void save(Book book){
-        BookRepository.saveToDatabase(book);
+        BookRepository.save(book);
     }
 
-    public static void findAll(){
+    public static void findBooksByName(){
+        System.out.println("Digite o título lo livro ou deixe em branco para listar todos:");
+        String title = SCANNER.nextLine();
         System.out.print(
                 "+----------------------------+-------------------------------+------+---------+--------------------------------------+\n");
         System.out.printf(
@@ -26,35 +28,36 @@ public class BookService {
                 "Título", "Autor", "Ano", "Edição", "ID");
         System.out.print(
                 "+----------------------------+-------------------------------+------+---------+--------------------------------------+\n");
-        List<Book> bookList = new ArrayList<>(BookRepository.findAllBooks());
+        List<Book> bookList = new ArrayList<>(BookRepository.findAllBooks(title));
         for (Book book: bookList){
-            System.out.printf("| %-26s | %-29s | %-4d | %-7s | %-36s |\n", book.getTitle(), book.getAuthor(), book.getYear(), book.getEdition(), book.getId().toString() );
+            System.out.printf("| %-26s | %-29s | %-4d | %-7s | %-36s |\n", book.getTitle(), book.getAuthor(), book.getYear(), book.getEdition(), book.getId());
 
         }
         System.out.print("----------------------------------------------------------------------------------------------------------------------\n");
     }
 
-    public static void findById(){
-        UUID id = null;
+    /*public static void findById(){
+        int id = null;
         while (id == null){
             System.out.print("Insert book id: ");
             try {
-                id = UUID.fromString(SCANNER.nextLine());
+                id = Integer.parseInt(SCANNER.nextLine());
             }catch (IllegalArgumentException e){
+                log.warn("Id is not formatted as UUID");
                 System.out.println("Id não está no formato adequado. Tentando novamente...");
             }
         }
 
         Optional<Book> bookFromDb = BookRepository.findById(id);
         if(bookFromDb.isEmpty()){
-            System.out.println("No such identifier");
+            System.out.println("A identificação não existe");
             return;
         }
 
         Book book = bookFromDb.get();
 
         System.out.println(book);
-    }
+    }*/
 
     public static void createNewBook(){
         System.out.println("Type the title of the book: ");
@@ -79,12 +82,13 @@ public class BookService {
                 .build();
         log.info("saving '{}' by {}, {} ", title, lastName, firstName );
         System.out.println(createBook.toString());
-        BookRepository.saveToDatabase(createBook);
+        BookRepository.save(createBook);
     }
+
 
     public static void deleteBookById(){
         System.out.println("Type the identification of the book: ");
-        UUID id = UUID.fromString(SCANNER.nextLine());
+        int id = Integer.parseInt(SCANNER.nextLine());
         BookRepository.deleteBookById(id);
 
     }
