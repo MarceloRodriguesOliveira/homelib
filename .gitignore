@@ -35,8 +35,6 @@ build/
 .vscode/
 
 ### Mac OS ###
-.DS_Store
+.DS_Store!
 
-### Database ###
-C:\Users\Marcelo\Documents\Java\homelib\src\main\java\com\homelib\db
-
+/src/main/java/com/homelib/db/
