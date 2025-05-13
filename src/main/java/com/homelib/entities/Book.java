@@ -15,7 +15,7 @@ public class Book {
     private String lastNameAuthor;
     private int year;
     private int edition;
-    private final UUID id;
+    private int id;
 
     @Override
     public String toString() {
@@ -29,13 +29,21 @@ public class Book {
                 '}';
     }
 
-    private Book(String name, String firstNameAuthor, String lastNameAuthor, int year, int edition, UUID id) {
+    private Book(String name, String firstNameAuthor, String lastNameAuthor, int year, int edition, int id) {
         this.title = name;
         this.firstNameAuthor = firstNameAuthor;
         this.lastNameAuthor = lastNameAuthor;
         this.year = year;
         this.edition = edition;
         this.id = id;
+    }
+
+    private Book(String title, String firstNameAuthor, String lastNameAuthor, int year, int edition) {
+        this.title = title;
+        this.firstNameAuthor = firstNameAuthor;
+        this.lastNameAuthor = lastNameAuthor;
+        this.year = year;
+        this.edition = edition;
     }
 
     public String getAuthor() {
@@ -49,7 +57,7 @@ public class Book {
         private String lastNameAuthor;
         private int year;
         private int edition;
-        private UUID id;
+        private int id;
 
         public BookBuilder() {
         }
@@ -83,7 +91,7 @@ public class Book {
             return this;
         }
 
-        public BookBuilder id(UUID id){
+        public BookBuilder id(int id){
             this.id = id;
             return this;
         }
@@ -91,8 +99,7 @@ public class Book {
 
 
         public Book build(){
-            UUID finalId = (this.id != null) ? this.id : UUID.randomUUID();
-            return new Book(title, firstNameAuthor, lastNameAuthor, year, edition, finalId );
+            return new Book(title, firstNameAuthor, lastNameAuthor, year, edition, id);
         }
 
 
