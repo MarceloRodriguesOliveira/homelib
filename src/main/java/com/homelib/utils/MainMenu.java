@@ -3,7 +3,7 @@ package com.homelib.utils;
 public class MainMenu implements Menu {
     @Override
     public void options() {
-        System.out.println("1. Listar todos os livros");
+        System.out.println("1. Procurar por nome/listar todos os livros");
         System.out.println("2. Buscar livro via identificador");
         System.out.println("3. Registrar novo livro");
         System.out.println("4. Apagar livro");
