@@ -12,7 +12,7 @@ public class ConnectionFactory {
     public static Connection getConnection() throws SQLException {
         try{
             Connection conn = DriverManager.getConnection(URL);
-            System.out.println("Connection to SQLite has been established.\"");
+            System.out.println("Connection to SQLite has been established");
             return conn;
         }catch (SQLException e){
             System.err.println("SQL connection could not be established. Check stack trace.");
