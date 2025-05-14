@@ -18,9 +18,10 @@ public class BookService {
         BookRepository.save(book);
     }
 
-    public static void findBooksByName(){
-        System.out.println("Digite o título lo livro ou deixe em branco para listar todos:");
+    public static void findBookByName(){
+        System.out.println("Digite o título do livro ou deixe em branco para listar todos:");
         String title = SCANNER.nextLine();
+        List<Book> bookList = new ArrayList<>(BookRepository.findAllBooks(title));
         System.out.print(
                 "+----------------------------+-------------------------------+------+---------+--------------------------------------+\n");
         System.out.printf(
@@ -28,7 +29,6 @@ public class BookService {
                 "Título", "Autor", "Ano", "Edição", "ID");
         System.out.print(
                 "+----------------------------+-------------------------------+------+---------+--------------------------------------+\n");
-        List<Book> bookList = new ArrayList<>(BookRepository.findAllBooks(title));
         for (Book book: bookList){
             System.out.printf("| %-26s | %-29s | %-4d | %-7s | %-36s |\n", book.getTitle(), book.getAuthor(), book.getYear(), book.getEdition(), book.getId());
 
