@@ -15,9 +15,6 @@ public class MenuFactory  {
             case ADMIN -> {
                 return new AdminMenu();
             }
-            case SERVICE_OPERATIONS -> {
-                return new ServiceMenu();
-            }
             default -> throw new IllegalArgumentException("Menu não encontrado");
         }
 
