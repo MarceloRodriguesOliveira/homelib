@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,9 +23,16 @@ public class BookRepository {
         GlobalStore.getInstance().getData().add(book);
     }
 
-    public static void save(Book book){
+    public static Book save(Book book){
         try(Connection conn = ConnectionFactory.getConnection(); PreparedStatement ps = createPrepareStatementSave(conn, book);) {
             ps.execute();
+
+            try( ResultSet rs = ps.getGeneratedKeys();){
+                if(rs.next()){
+                    book.setId(rs.getInt(1));
+                }
+            }
+            return book;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -32,7 +40,7 @@ public class BookRepository {
 
     private static PreparedStatement createPrepareStatementSave(Connection conn, Book book ) throws SQLException {
         String sql = "INSERT INTO `book_store` (`title`, `firstnameauthor`, `lastnameauthor`, `year`, `edition`) VALUES (?, ?, ?, ?, ?)";
-        PreparedStatement ps = conn.prepareStatement(sql);
+        PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         ps.setString(1, book.getTitle());
         ps.setString(2, book.getFirstNameAuthor());
         ps.setString(3, book.getLastNameAuthor());
