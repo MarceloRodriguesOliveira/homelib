@@ -3,6 +3,7 @@ package com.homelib.service;
 import com.homelib.entities.Book;
 import com.homelib.entities.GlobalStore;
 import com.homelib.repository.BookRepository;
+import com.homelib.utils.BookInputReader;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @Log4j2
 public class BookService {
     private static final Scanner SCANNER = new Scanner(System.in);
+    static BookInputReader bookInputReader;
     public static void save(Book book){
         BookRepository.save(book);
     }
@@ -59,8 +61,8 @@ public class BookService {
         System.out.println(book);
     }*/
 
-    public static void createNewBook(){
-        System.out.println("Type the title of the book: ");
+    public static int createNewBook(Book book){
+       /* System.out.println("Type the title of the book: ");
         String title = SCANNER.nextLine();
         System.out.println("Type author's first name: ");
         String firstName = SCANNER.nextLine();
@@ -80,9 +82,11 @@ public class BookService {
                 .year(year)
                 .edition(edition)
                 .build();
-        log.info("saving '{}' by {}, {} ", title, lastName, firstName );
-        System.out.println(createBook.toString());
-        BookRepository.save(createBook);
+        log.info("saving '{}' by {}, {} ", title, lastName, firstName );*/
+        /*Book inputBook = bookInputReader.readBook();
+        System.out.println(inputBook);*/
+        var createdBook = BookRepository.save(book);
+        return createdBook.getId();
     }
 
 
