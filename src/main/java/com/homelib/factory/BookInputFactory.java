@@ -6,17 +6,22 @@ import com.homelib.utils.BookInputReader;
 import com.homelib.utils.BookOperations;
 import com.homelib.utils.ServiceMenu;
 
+import java.util.Optional;
+
 public class BookInputFactory {
     public static void getMenu(OperationType action){
         BookOperations bookOperations = new BookOperations();
         switch (action){
             case CREATE -> {
-                var book = bookOperations.readBook();
-                BookService.createNewBook(book);
+                bookOperations.inputBook();
             }
             case SEARCH_ID -> {
                 var id = bookOperations.readId();
-                //BookService.deleteBookById();
+                var book = BookService.findById(id);
+                System.out.println(book);
+            }
+            case LIST_BOOKS -> {
+                bookOperations.listBookByName();
             }
         };
 

@@ -2,6 +2,7 @@ package com.homelib.utils;
 
 import com.homelib.entities.Book;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -36,6 +37,11 @@ public interface BookInputReader {
     default int readId(){
         System.out.println("Type the id of the book: ");
         return Integer.parseInt(SCANNER.nextLine());
+    }
+
+    default String listBooks(){
+        System.out.println("Digite o título do livro ou deixe em branco para listar todos: ");
+        return SCANNER.nextLine();
     }
 
 }
