@@ -20,71 +20,26 @@ public class BookService {
         BookRepository.save(book);
     }
 
-    public static void findBookByName(){
-        System.out.println("Digite o título do livro ou deixe em branco para listar todos:");
-        String title = SCANNER.nextLine();
-        List<Book> bookList = new ArrayList<>(BookRepository.findAllBooks(title));
-        System.out.print(
-                "+----------------------------+-------------------------------+------+---------+--------------------------------------+\n");
-        System.out.printf(
-                "| %-26s | %-29s | %-4s | %-7s | %-36s |\n",
-                "Título", "Autor", "Ano", "Edição", "ID");
-        System.out.print(
-                "+----------------------------+-------------------------------+------+---------+--------------------------------------+\n");
-        for (Book book: bookList){
-            System.out.printf("| %-26s | %-29s | %-4d | %-7s | %-36s |\n", book.getTitle(), book.getAuthor(), book.getYear(), book.getEdition(), book.getId());
-
-        }
-        System.out.print("----------------------------------------------------------------------------------------------------------------------\n");
+    public static List<Book> findBookByName(String title){
+        return new ArrayList<>(BookRepository.findAllBooks(title));
     }
 
-    /*public static void findById(){
-        int id = null;
-        while (id == null){
-            System.out.print("Insert book id: ");
-            try {
-                id = Integer.parseInt(SCANNER.nextLine());
-            }catch (IllegalArgumentException e){
-                log.warn("Id is not formatted as UUID");
-                System.out.println("Id não está no formato adequado. Tentando novamente...");
-            }
+    public static Optional<Book> findById(int id){
+        return BookRepository.findById(id);
+       /* if(bookFromDb.isEmpty()){
+            System.out.println("A identificação não existe");
+            return Optional.empty();
         }
 
-        Optional<Book> bookFromDb = BookRepository.findById(id);
-        if(bookFromDb.isEmpty()){
-            System.out.println("A identificação não existe");
-            return;
-        }
+        System.out.println(bookFromDb.toString());
+        return boo
 
         Book book = bookFromDb.get();
 
-        System.out.println(book);
-    }*/
+        System.out.println(book);*/
+    }
 
     public static int createNewBook(Book book){
-       /* System.out.println("Type the title of the book: ");
-        String title = SCANNER.nextLine();
-        System.out.println("Type author's first name: ");
-        String firstName = SCANNER.nextLine();
-        System.out.println("Type author's last name: ");
-        String lastName = SCANNER.nextLine();
-        System.out.println("Type the year of publication");
-        Integer year = Integer.parseInt(SCANNER.nextLine());
-        System.out.println("Type the edition number: ");
-        Integer edition = Integer.parseInt(SCANNER.nextLine());
-
-        Book createBook = Book
-                .BookBuilder
-                .builder()
-                .title(title)
-                .firstNameAuthor(firstName)
-                .lastNameAuthor(lastName)
-                .year(year)
-                .edition(edition)
-                .build();
-        log.info("saving '{}' by {}, {} ", title, lastName, firstName );*/
-        /*Book inputBook = bookInputReader.readBook();
-        System.out.println(inputBook);*/
         var createdBook = BookRepository.save(book);
         return createdBook.getId();
     }
