@@ -84,43 +84,32 @@ public class BookRepository {
 
 
     public static Optional<Book> findById(int targetID){
-        List<Book> books = GlobalStore.getInstance().getData();
-        for (Book book:books){
-            if(book.getId() == targetID){
-                Book targetBook = Book.BookBuilder
-                        .builder()
-                        .title(book.getTitle())
-                        .firstNameAuthor(book.getFirstNameAuthor())
-                        .lastNameAuthor(book.getLastNameAuthor())
-                        .year(book.getYear())
-                        .edition(book.getEdition())
-                        .id(book.getId())
-                        .build();
-                log.info("found '{}' by {}, {} ", targetBook.getTitle(), targetBook.getLastNameAuthor(), targetBook.getFirstNameAuthor());
-                return Optional.of(targetBook);
-            }
+        try(Connection conn = ConnectionFactory.getConnection();
+            PreparedStatement ps = createPreparedStatementFindById(conn, targetID);
+            ResultSet rs = ps.executeQuery();
+        ){
+            if(!rs.next()) return Optional.empty();
+            return Optional.of(Book.BookBuilder
+                    .builder()
+                    .title(rs.getString("title"))
+                    .firstNameAuthor(rs.getString("firstnameauthor"))
+                    .lastNameAuthor(rs.getString("lastnameauthor"))
+                    .year(rs.getInt("year"))
+                    .edition(rs.getInt("edition"))
+                    .id(rs.getInt("id"))
+                    .build());
+        }catch (SQLException e){
+            log.error("Error while searching for this id");
         }
         return Optional.empty();
     }
 
-    /*public static void updateById(UUID targetId, Book updatedBook){
-        List<Book> books = GlobalStore.getInstance().getData();
-        Optional<Book> bookFromDb = findById(targetId);
-        if(bookFromDb.isPresent()){
-            Book book = bookFromDb.get();
-            for (int i = 0; i < books.toArray().length; i++) {
-                if(book.getId().equals(targetId)){
-                    GlobalStore.getInstance().getData().get(i).setTitle(updatedBook.getTitle());
-                    GlobalStore.getInstance().getData().get(i).setFirstNameAuthor(updatedBook.getFirstNameAuthor());
-                    GlobalStore.getInstance().getData().get(i).setLastNameAuthor(updatedBook.getLastNameAuthor());
-                    GlobalStore.getInstance().getData().get(i).setYear(updatedBook.getYear());
-                    GlobalStore.getInstance().getData().get(i).setEdition(updatedBook.getEdition());
-                }
-            }
-            log.info("Book Updated");
-
-        }
-    }*/
+    public static PreparedStatement createPreparedStatementFindById(Connection conn, int id) throws SQLException{
+        String sql = "SELECT * FROM `book_store` WHERE id = ?";
+        PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        ps.setInt(1, id);
+        return ps;
+    }
 
     public static void deleteBookById(int searchId){
         Optional<Book> bookFromDb = findById(searchId);
@@ -134,6 +123,10 @@ public class BookRepository {
         log.info("Id is not present on any book register");
 
     }
+
+    /*public static PreparedStatement createPreparedStatementDeleteById(){
+
+    }*/
 
 
 
