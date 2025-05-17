@@ -14,18 +14,19 @@ import java.util.UUID;
 
 @Log4j2
 public class BookService {
-    private static final Scanner SCANNER = new Scanner(System.in);
-    static BookInputReader bookInputReader;
-    public static void save(Book book){
-        BookRepository.save(book);
+    private final BookRepository bookRepository;
+
+    public BookService(BookRepository bookRepository){
+        this.bookRepository = bookRepository;
     }
 
-    public static List<Book> findBookByName(String title){
-        return new ArrayList<>(BookRepository.findAllBooks(title));
+
+    public List<Book> findBookByName(String title){
+        return new ArrayList<>(bookRepository.findAllBooks(title));
     }
 
-    public static Optional<Book> findById(int id){
-        return BookRepository.findById(id);
+    public Optional<Book> findById(int id){
+        return bookRepository.findById(id);
        /* if(bookFromDb.isEmpty()){
             System.out.println("A identificação não existe");
             return Optional.empty();
@@ -39,16 +40,16 @@ public class BookService {
         System.out.println(book);*/
     }
 
-    public static int createNewBook(Book book){
-        var createdBook = BookRepository.save(book);
+    public int createNewBook(Book book){
+        Book createdBook = bookRepository.save(book);
         return createdBook.getId();
     }
 
 
-    public static void deleteBookById(){
+    public void deleteBookById(){
         System.out.println("Type the identification of the book: ");
-        int id = Integer.parseInt(SCANNER.nextLine());
-        BookRepository.deleteBookById(id);
+        //int id = Integer.parseInt(SCANNER.nextLine());
+        //BookRepository.deleteBookById(id);
 
     }
 
