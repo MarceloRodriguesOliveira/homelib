@@ -4,22 +4,35 @@ import com.homelib.entities.Book;
 import com.homelib.service.BookService;
 
 import java.util.List;
+import java.util.Optional;
 
 public class BookOperations implements BookInputReader {
+    private final BookService bookService;
+
+    public BookOperations(BookService bookService) {
+        this.bookService = bookService;
+    }
 
     public void inputBook(){
         Book createBook = this.readBook();
-        BookService.createNewBook(createBook);
+        bookService.createNewBook(createBook);
     }
 
     public void inputId(){
         int id = this.readId();
-        BookService.deleteBookById();
+        Optional<Book> bookFromDb = bookService.findById(id);
+        if(bookFromDb.isEmpty()){
+            System.out.println("Não existe livro com essa identificação");
+            return;
+        }
+        Book book = bookFromDb.get();
+        System.out.println(book);
+
     }
 
     public void listBookByName(){
         String title = this.listBooks();
-        List<Book> bookList = BookService.findBookByName(title);
+        List<Book> bookList = bookService.findBookByName(title);
         if(bookList.isEmpty()){
             System.out.println("Não existe nenhum livro com esse título");
             return;
