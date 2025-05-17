@@ -14,15 +14,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
 class BookServiceTest {
 
     @Mock
-    BookRepository bookRepository;
+    private BookRepository bookRepository;
 
     @Mock
     BookInputReader bookInputReader;
@@ -32,6 +37,12 @@ class BookServiceTest {
 
     @Captor
     private ArgumentCaptor<Book> bookArgumentCaptor;
+
+    @Captor
+    private ArgumentCaptor<String> titleArgumentCaptor;
+
+    @Captor
+    private ArgumentCaptor<Integer> idArgumentCaptor;
 
     private Book book;
 
@@ -53,24 +64,90 @@ class BookServiceTest {
         @DisplayName("Should create a new book class")
         void shouldCreateNewBook(){
             //Arrange
-            doReturn(book).when(bookRepository).save(bookArgumentCaptor.capture());
+            doReturn(book).when(bookRepository).save(any(Book.class));
+
 
             //Act
             var output = bookService.createNewBook(book);
 
 
             //Assert
-            assert
-
+            assertNotNull(output);
+            verify(bookRepository).save(bookArgumentCaptor.capture());
+            var bookCaptured = bookArgumentCaptor.getValue();
+            assertEquals(book.getTitle(), bookCaptured.getTitle());
+            assertEquals(book.getId(),  bookCaptured.getId());
+            assertEquals(book.getFirstNameAuthor(),  bookCaptured.getFirstNameAuthor());
+            assertEquals(book.getLastNameAuthor(),  bookCaptured.getLastNameAuthor());
 
         }
 
+        @Test
+        @DisplayName("Should launch exception when error occurs")
+        void shouldThrowExceptionWhenErrorOccurs(){
+            doThrow(new RuntimeException()).when(bookRepository).save(any());
 
-
+            assertThrows(RuntimeException.class, ()-> bookService.createNewBook(book));
+        }
     }
 
-    @Test
-    void findBookByName() {
+    @Nested
+    class findBookByName{
+        @Test
+        @DisplayName("Should return list of books with similar titles")
+        void shouldReturnListOfBooks(){
+            List<Book> bookList = List.of(book);
+            doReturn(bookList).when(bookRepository).findAllBooks(anyString());
+
+            var output = bookService.findBookByName(book.getTitle());
+
+            assertNotNull(output);
+            verify(bookRepository).findAllBooks(titleArgumentCaptor.capture());
+            assertEquals(book.getTitle(), titleArgumentCaptor.getValue());
+
+        }
+
+        @Test
+        @DisplayName("should return empty list when there is no matching data")
+        void shouldReturnEmptyListWhenThereIsNoMatchingData(){
+            List<Book> bookList = List.of();
+            doReturn(bookList).when(bookRepository).findAllBooks(anyString());
+
+            var output = bookService.findBookByName(book.getTitle());
+
+            assertNotNull(output);
+            verify(bookRepository).findAllBooks(titleArgumentCaptor.capture());
+            assertTrue(output.isEmpty());
+        }
+    }
+
+    @Nested
+    class findBookById{
+        @Test
+        @DisplayName("Should return a Optional book object when id matches")
+        void shouldReturnOptionalWhenIdMatches(){
+            Optional<Book> bookFromDb = Optional.of(book);
+            doReturn(bookFromDb).when(bookRepository).findById(anyInt());
+
+            var output = bookService.findById(book.getId());
+
+            assertNotNull(output);
+            verify(bookRepository).findById(idArgumentCaptor.capture());
+            assertTrue(output.isPresent());
+        }
+
+        @Test
+        @DisplayName("Should return empty optional")
+        void shouldReturnEmptyOptional(){
+            doReturn(Optional.empty()).when(bookRepository).findById(anyInt());
+
+            var output = bookService.findById(book.getId());
+
+            assertTrue(output.isEmpty());
+
+            verify(bookRepository).findById(idArgumentCaptor.capture());
+
+        }
     }
 
 }
