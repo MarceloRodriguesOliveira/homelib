@@ -23,7 +23,7 @@ public class BookRepository {
         GlobalStore.getInstance().getData().add(book);
     }
 
-    public static Book save(Book book){
+    public Book save(Book book){
         try(Connection conn = ConnectionFactory.getConnection(); PreparedStatement ps = createPrepareStatementSave(conn, book);) {
             ps.execute();
 
@@ -49,7 +49,7 @@ public class BookRepository {
         return ps;
     }
 
-    public static List<Book> findAllBooks(String title){
+    public List<Book> findAllBooks(String title){
         List<Book> booksFound = new ArrayList<Book>();
         try(Connection conn = ConnectionFactory.getConnection();
             PreparedStatement ps = createPreparedStatementFindByTitle(conn, title);
@@ -83,7 +83,7 @@ public class BookRepository {
 
 
 
-    public static Optional<Book> findById(int targetID){
+    public Optional<Book> findById(int targetID){
         try(Connection conn = ConnectionFactory.getConnection();
             PreparedStatement ps = createPreparedStatementFindById(conn, targetID);
             ResultSet rs = ps.executeQuery();
@@ -111,7 +111,7 @@ public class BookRepository {
         return ps;
     }
 
-    public static void deleteBookById(int searchId){
+    public void deleteBookById(int searchId){
         Optional<Book> bookFromDb = findById(searchId);
         if (bookFromDb.isPresent()){
             Book book = bookFromDb.get();
