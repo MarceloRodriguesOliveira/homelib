@@ -10,15 +10,13 @@ import java.util.Optional;
 
 public class BookInputFactory {
     public static void getMenu(OperationType action){
-        BookOperations bookOperations = new BookOperations();
+        BookOperations bookOperations = OperationsFactory.createBookOperations();
         switch (action){
             case CREATE -> {
                 bookOperations.inputBook();
             }
             case SEARCH_ID -> {
-                var id = bookOperations.readId();
-                var book = BookService.findById(id);
-                System.out.println(book);
+                bookOperations.inputId();
             }
             case LIST_BOOKS -> {
                 bookOperations.listBookByName();
