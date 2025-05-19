@@ -24,6 +24,9 @@ public class BookInputFactory {
             case DELETE_BOOK -> {
                 bookOperations.deleteBook();
             }
+            case UPDATE -> {
+                bookOperations.updateBook();
+            }
         };
 
     }

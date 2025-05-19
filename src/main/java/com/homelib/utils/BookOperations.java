@@ -57,5 +57,10 @@ public class BookOperations implements BookInputReader {
         bookService.deleteBookById(id);
     }
 
+    public void updateBook(){
+        int id = readIdUpdate();
+        bookService.updateBook(id);
+    }
+
 
 }
