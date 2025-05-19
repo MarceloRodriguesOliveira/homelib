@@ -49,4 +49,9 @@ public interface BookInputReader {
         return Integer.parseInt(SCANNER.nextLine());
     }
 
+    default int readIdUpdate(){
+        System.out.println("Digite a id do livro que deseja atualizar");
+        return Integer.parseInt(SCANNER.nextLine());
+    }
+
 }
