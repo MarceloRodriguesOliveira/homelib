@@ -30,6 +30,7 @@ public class Main {
                 case 2 -> BookInputFactory.getMenu(OperationType.SEARCH_ID);
                 case 3 -> BookInputFactory.getMenu(OperationType.CREATE);
                 case 4 -> BookInputFactory.getMenu(OperationType.DELETE_BOOK);
+                case 5 -> BookInputFactory.getMenu(OperationType.UPDATE);
             }
         }
 

@@ -7,6 +7,7 @@ public class MainMenu implements Menu {
         System.out.println("2. Buscar livro via identificador");
         System.out.println("3. Registrar novo livro");
         System.out.println("4. Apagar livro");
+        System.out.println("5. Atualizar dados de um livro");
         System.out.println("0. Sair do programa");
     }
 }

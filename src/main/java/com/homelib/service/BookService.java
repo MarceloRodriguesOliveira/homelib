@@ -18,6 +18,7 @@ public class BookService {
 
     public BookService(BookRepository bookRepository){
         this.bookRepository = bookRepository;
+
     }
 
 
@@ -51,7 +52,28 @@ public class BookService {
         Optional<Book> bookFromDb = findById(id);
 
         if(bookFromDb.isPresent()){
-            Book bookToBeUpdated = bookFromDb.get();
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Type the title of the book: ");
+            String title = scanner.nextLine();
+            System.out.println("Type author's first name: ");
+            String firstName = scanner.nextLine();
+            System.out.println("Type author's last name: ");
+            String lastName = scanner.nextLine();
+            System.out.println("Type the year of publication");
+            Integer year = Integer.parseInt(scanner.nextLine());
+            System.out.println("Type the edition number: ");
+            Integer edition = Integer.parseInt(scanner.nextLine());
+
+            Book bookToBeUpdated = Book
+                        .BookBuilder
+                        .builder()
+                        .title(title)
+                        .firstNameAuthor(firstName)
+                        .lastNameAuthor(lastName)
+                        .year(year)
+                        .edition(edition)
+                        .id(id)
+                        .build();
             bookRepository.update(bookToBeUpdated);
             return;
         }
