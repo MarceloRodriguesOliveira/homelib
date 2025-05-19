@@ -48,37 +48,8 @@ public class BookService {
 
     }
 
-    public void updateBook(int id){
-        Optional<Book> bookFromDb = findById(id);
-
-        if(bookFromDb.isPresent()){
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Type the title of the book: ");
-            String title = scanner.nextLine();
-            System.out.println("Type author's first name: ");
-            String firstName = scanner.nextLine();
-            System.out.println("Type author's last name: ");
-            String lastName = scanner.nextLine();
-            System.out.println("Type the year of publication");
-            Integer year = Integer.parseInt(scanner.nextLine());
-            System.out.println("Type the edition number: ");
-            Integer edition = Integer.parseInt(scanner.nextLine());
-
-            Book bookToBeUpdated = Book
-                        .BookBuilder
-                        .builder()
-                        .title(title)
-                        .firstNameAuthor(firstName)
-                        .lastNameAuthor(lastName)
-                        .year(year)
-                        .edition(edition)
-                        .id(id)
-                        .build();
-            bookRepository.update(bookToBeUpdated);
-            return;
-        }
-
-        log.info("Could not match id to any existing book");
+    public void updateBook(Book book){
+        bookRepository.update(book);
     }
 
 

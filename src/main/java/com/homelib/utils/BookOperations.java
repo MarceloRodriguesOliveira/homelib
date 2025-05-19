@@ -59,7 +59,16 @@ public class BookOperations implements BookInputReader {
 
     public void updateBook(){
         int id = readIdUpdate();
-        bookService.updateBook(id);
+        var output = bookService.findById(id);
+
+        if (output.isEmpty()){
+            System.out.println("Id não existente");
+            return;
+        }
+
+        Book updatedBook = readBook();
+        updatedBook.setId(id);
+        bookService.updateBook(updatedBook);
     }
 
 
