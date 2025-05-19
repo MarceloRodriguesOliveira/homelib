@@ -130,8 +130,14 @@ public class BookRepository {
         return ps;
     }
 
-    public void updateById(){
-        System.out.println("Nada ainda. Testando...");
+    public void update(Book book){
+        try(Connection conn = ConnectionFactory.getConnection();
+            PreparedStatement ps = createPreparedStatementUpdate(conn, book)){
+            ps.execute();
+
+        }catch (SQLException e){
+            log.error("Erro ao atualizar o livro");
+        }
     }
 
 
