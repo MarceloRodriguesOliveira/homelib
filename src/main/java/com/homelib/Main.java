@@ -29,7 +29,7 @@ public class Main {
                 case 1 -> BookInputFactory.getMenu(OperationType.LIST_BOOKS);
                 case 2 -> BookInputFactory.getMenu(OperationType.SEARCH_ID);
                 case 3 -> BookInputFactory.getMenu(OperationType.CREATE);
-                case 4 -> BookService.deleteBookById();
+                case 4 -> BookInputFactory.getMenu(OperationType.DELETE_BOOK);
             }
         }
 
