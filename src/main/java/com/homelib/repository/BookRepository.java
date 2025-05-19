@@ -111,22 +111,24 @@ public class BookRepository {
         return ps;
     }
 
-    public void deleteBookById(int searchId){
-        Optional<Book> bookFromDb = findById(searchId);
-        if (bookFromDb.isPresent()){
-            Book book = bookFromDb.get();
-            GlobalStore.getInstance().getData().removeIf(b -> b.getId()==(searchId));
-            log.info("'{}' by {}, {} is being deleted", book.getTitle(), book.getFirstNameAuthor(), book.getLastNameAuthor());
-            System.out.println("Esse registro foi apagado");
-            return;
-        }
-        log.info("Id is not present on any book register");
+    public void deleteBookById(int id){
+       try(Connection conn = ConnectionFactory.getConnection();
+           PreparedStatement ps = createPreparedStatementDeleteById(conn, id)
+          ){
+           log.info("Deleting...");
+           ps.execute();
+       }catch (SQLException e){
+           log.error("Error while deleting register");
+       }
 
     }
 
-    /*public static PreparedStatement createPreparedStatementDeleteById(){
-
-    }*/
+    public static PreparedStatement createPreparedStatementDeleteById(Connection conn, int id) throws SQLException{
+        String sql = "DELETE FROM `book_store` WHERE (`id` = ?)";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1, id);
+        return ps;
+    }
 
 
 

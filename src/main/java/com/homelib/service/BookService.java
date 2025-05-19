@@ -27,17 +27,6 @@ public class BookService {
 
     public Optional<Book> findById(int id){
         return bookRepository.findById(id);
-       /* if(bookFromDb.isEmpty()){
-            System.out.println("A identificação não existe");
-            return Optional.empty();
-        }
-
-        System.out.println(bookFromDb.toString());
-        return boo
-
-        Book book = bookFromDb.get();
-
-        System.out.println(book);*/
     }
 
     public int createNewBook(Book book){
@@ -46,10 +35,15 @@ public class BookService {
     }
 
 
-    public void deleteBookById(){
-        System.out.println("Type the identification of the book: ");
-        //int id = Integer.parseInt(SCANNER.nextLine());
-        //BookRepository.deleteBookById(id);
+    public void deleteBookById(int id){
+        var idExists = findById(id);
+
+        if(idExists.isPresent()){
+            bookRepository.deleteBookById(id);
+            return;
+        }
+
+        System.out.println("Id não existe. Saindo...");
 
     }
 
