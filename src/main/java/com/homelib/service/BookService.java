@@ -47,6 +47,18 @@ public class BookService {
 
     }
 
+    public void updateBook(int id){
+        Optional<Book> bookFromDb = findById(id);
+
+        if(bookFromDb.isPresent()){
+            Book bookToBeUpdated = bookFromDb.get();
+            bookRepository.update(bookToBeUpdated);
+            return;
+        }
+
+        log.info("Could not match id to any existing book");
+    }
+
 
 
 }
