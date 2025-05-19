@@ -21,6 +21,9 @@ public class BookInputFactory {
             case LIST_BOOKS -> {
                 bookOperations.listBookByName();
             }
+            case DELETE_BOOK -> {
+                bookOperations.deleteBook();
+            }
         };
 
     }
