@@ -53,5 +53,4 @@ public interface BookInputReader {
         System.out.println("Digite a id do livro que deseja atualizar");
         return Integer.parseInt(SCANNER.nextLine());
     }
-
 }
