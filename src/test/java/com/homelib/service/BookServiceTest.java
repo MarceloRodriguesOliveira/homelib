@@ -132,20 +132,23 @@ class BookServiceTest {
             var output = bookService.findById(book.getId());
 
             assertNotNull(output);
-            verify(bookRepository).findById(idArgumentCaptor.capture());
             assertTrue(output.isPresent());
+            assertEquals(book, output.get());
+            verify(bookRepository).findById(idArgumentCaptor.capture());
+            assertEquals(book.getId(), idArgumentCaptor.getValue());
         }
 
         @Test
-        @DisplayName("Should return empty optional")
-        void shouldReturnEmptyOptional(){
+        @DisplayName("Should return empty optional when there is no matching id")
+        void shouldReturnEmptyOptionalWhenThereIsNoMatchingId(){
             doReturn(Optional.empty()).when(bookRepository).findById(anyInt());
 
             var output = bookService.findById(book.getId());
 
-            assertTrue(output.isEmpty());
+            assertNotNull(output);
 
             verify(bookRepository).findById(idArgumentCaptor.capture());
+            assertEquals(book.getId(), idArgumentCaptor.getValue());
 
         }
     }
