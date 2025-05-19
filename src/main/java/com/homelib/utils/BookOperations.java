@@ -51,4 +51,11 @@ public class BookOperations implements BookInputReader {
         System.out.print("----------------------------------------------------------------------------------------------------------------------\n");
 
     }
+
+    public void deleteBook(){
+        int id = readIdDelete();
+        bookService.deleteBookById(id);
+    }
+
+
 }

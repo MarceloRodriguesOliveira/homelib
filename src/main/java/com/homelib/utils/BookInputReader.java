@@ -44,4 +44,9 @@ public interface BookInputReader {
         return SCANNER.nextLine();
     }
 
+    default int readIdDelete(){
+        System.out.println("Digite o id do livro que deseja apagar");
+        return Integer.parseInt(SCANNER.nextLine());
+    }
+
 }
