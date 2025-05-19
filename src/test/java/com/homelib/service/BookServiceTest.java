@@ -153,4 +153,46 @@ class BookServiceTest {
         }
     }
 
+    @Nested
+    class deleteBookByiId{
+        @Test
+        @DisplayName("Should delete book when book exists")
+        void shouldDeleteBookWhenBookExists(){
+            //Arrange
+            int anyId = 42;
+            doReturn(Optional.of(book)).when(bookRepository).findById(anyInt());
+            doNothing().when(bookRepository).deleteBookById(anyInt());
+
+            //Act
+            bookService.deleteBookById(anyId);
+
+
+            //Assert
+            verify(bookRepository, times(1)).findById(idArgumentCaptor.capture());
+            verify(bookRepository, times(1)).deleteBookById(idArgumentCaptor.capture());
+
+            var idList = idArgumentCaptor.getAllValues();
+            assertEquals(2, idList.size());
+            assertEquals(anyId, idList.get(0));
+            assertEquals(anyId, idList.get(1));
+            assertEquals(idList.get(0), idList.get(1));
+        }
+
+        @Test
+        @DisplayName("Should not delete book when book does not exist")
+        void shouldNotDeleteBookIfBookDoesNotExist(){
+            int anyId = 42;
+            doReturn(Optional.empty()).when(bookRepository).findById(anyInt());
+
+
+            bookService.deleteBookById(anyId);
+
+            verify(bookRepository, times(1)).findById(idArgumentCaptor.capture());
+            int capturedId = idArgumentCaptor.getValue();
+            assertEquals(anyId, capturedId);
+            verify(bookRepository, never()).deleteBookById(anyInt());
+
+        }
+    }
+
 }
