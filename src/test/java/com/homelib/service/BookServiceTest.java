@@ -180,7 +180,7 @@ class BookServiceTest {
 
         @Test
         @DisplayName("Should not delete book when book does not exist")
-        void shouldNotDeleteBookIfBookDoesNotExist(){
+        void shouldNotDeleteBookIfBookDoesNotExists(){
             int anyId = 40;
             doReturn(Optional.empty()).when(bookRepository).findById(anyInt());
 
@@ -191,6 +191,23 @@ class BookServiceTest {
             int capturedId = idArgumentCaptor.getValue();
             assertEquals(anyId, capturedId);
             verify(bookRepository, never()).deleteBookById(anyInt());
+
+        }
+    }
+
+    @Nested
+    class updateBook{
+        @Test
+        @DisplayName("Should update values if book exists")
+        void shouldUpdateBookIfBookExists(){
+            int anyId = 42;
+            book.setId(anyId);
+
+            bookService.updateBook(book);
+
+            verify(bookRepository).update(bookArgumentCaptor.capture());
+
+            assertEquals(anyId, bookArgumentCaptor.getValue().getId());
 
         }
     }
