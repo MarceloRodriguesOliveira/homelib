@@ -181,7 +181,7 @@ class BookServiceTest {
         @Test
         @DisplayName("Should not delete book when book does not exist")
         void shouldNotDeleteBookIfBookDoesNotExist(){
-            int anyId = 42;
+            int anyId = 40;
             doReturn(Optional.empty()).when(bookRepository).findById(anyInt());
 
 
