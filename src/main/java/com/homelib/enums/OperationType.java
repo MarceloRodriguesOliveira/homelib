@@ -5,5 +5,6 @@ public enum OperationType {
     SEARCH_ID,
     LIST_BOOKS,
     DELETE_BOOK,
-    UPDATE
+    UPDATE,
+    EXPORT
 }

@@ -27,6 +27,9 @@ public class BookInputFactory {
             case UPDATE -> {
                 bookOperations.updateBook();
             }
+            case EXPORT ->{
+                bookOperations.exportBookList();
+            }
         };
 
     }

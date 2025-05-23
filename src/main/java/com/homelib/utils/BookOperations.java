@@ -3,6 +3,8 @@ package com.homelib.utils;
 import com.homelib.entities.Book;
 import com.homelib.service.BookService;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,6 +71,20 @@ public class BookOperations implements BookInputReader {
         Book updatedBook = readBook();
         updatedBook.setId(id);
         bookService.updateBook(updatedBook);
+    }
+
+    public void exportBookList(){
+        List<Book> bookListFromDb = bookService.findBookByName("");
+        try(FileWriter writer = new FileWriter("C:\\Users\\Marcelo\\Desktop\\ExportedListTest.txt")){
+            for (Book books: bookListFromDb){
+                writer.write(books.getTitle() + "\n");
+            }
+            System.out.println("File has been Written");
+
+        }catch (IOException e){
+            System.out.println("Could not write file");
+
+        }
     }
 
 
