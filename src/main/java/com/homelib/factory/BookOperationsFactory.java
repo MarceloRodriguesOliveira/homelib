@@ -1,14 +1,9 @@
 package com.homelib.factory;
 
 import com.homelib.enums.OperationType;
-import com.homelib.service.BookService;
-import com.homelib.utils.BookInputReader;
 import com.homelib.utils.BookOperations;
-import com.homelib.utils.ServiceMenu;
 
-import java.util.Optional;
-
-public class BookInputFactory {
+public class BookOperationsFactory {
     public static void getMenu(OperationType action){
         BookOperations bookOperations = OperationsFactory.createBookOperations();
         switch (action){
