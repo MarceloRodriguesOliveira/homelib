@@ -2,6 +2,7 @@ package com.homelib.utils;
 
 import com.homelib.entities.Book;
 import com.homelib.output.formatter.BookFormatter;
+import com.homelib.output.writer.Writer;
 import com.homelib.service.BookService;
 
 import java.io.FileWriter;
@@ -76,17 +77,7 @@ public class BookOperations implements BookInputReader {
 
     public void exportBookList(){
         List<Book> bookListFromDb = bookService.findBookByName("");
-        try(FileWriter writer = new FileWriter("C:\\Users\\Marcelo\\Desktop\\ExportedListTest.txt")){
-            for (Book books: bookListFromDb){
-                String fmString = BookFormatter.toExport(books);
-                writer.write(fmString + "\n");
-            }
-            System.out.println("File has been Written");
-
-        }catch (IOException e){
-            System.out.println("Could not write file");
-
-        }
+        Writer.exportToTxt(bookListFromDb);
     }
 
 
