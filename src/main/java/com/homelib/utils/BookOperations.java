@@ -1,6 +1,7 @@
 package com.homelib.utils;
 
 import com.homelib.entities.Book;
+import com.homelib.output.formatter.BookFormatter;
 import com.homelib.service.BookService;
 
 import java.io.FileWriter;
@@ -77,7 +78,8 @@ public class BookOperations implements BookInputReader {
         List<Book> bookListFromDb = bookService.findBookByName("");
         try(FileWriter writer = new FileWriter("C:\\Users\\Marcelo\\Desktop\\ExportedListTest.txt")){
             for (Book books: bookListFromDb){
-                writer.write(books.getTitle() + "\n");
+                String fmString = BookFormatter.toExport(books);
+                writer.write(fmString + "\n");
             }
             System.out.println("File has been Written");
 
