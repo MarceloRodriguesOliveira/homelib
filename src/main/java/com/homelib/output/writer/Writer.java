@@ -3,6 +3,8 @@ package com.homelib.output.writer;
 import com.homelib.entities.Book;
 import com.homelib.output.formatter.BookFormatter;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -26,18 +28,28 @@ public class Writer {
     }
 
     public static void readFromFile(){
-        String filePath = ("C:\\Users\\Marcelo\\Desktop\\DEV\\ExportedListTest.txt");
-        try(BufferedReader reader = new BufferedReader(new FileReader(filePath))){
-            String line;
-            while ((line = reader.readLine()) != null){
-                System.out.println(line);
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                "Only txt files",
+                "txt");
+        chooser.setFileFilter(filter);
+        int returnVal = chooser.showOpenDialog(null);
+        if(returnVal == JFileChooser.APPROVE_OPTION){
+            try(BufferedReader reader = new BufferedReader(new FileReader(chooser.getSelectedFile()))){
+                String line;
+                while ((line = reader.readLine()) != null){
+                    System.out.println(line);
+                }
+
+            }catch (FileNotFoundException e){
+                System.out.println("File not found");
+
+            } catch (IOException e) {
+                System.out.println("Erro ao acessar arquivo");
             }
 
-        }catch (FileNotFoundException e){
-            System.out.println("File not found");
-
-        } catch (IOException e) {
-            System.out.println("Erro ao acessar arquivo");
         }
+        System.out.println("Nenhum arquivo selecionado. Retornando...");
+
     }
 }
