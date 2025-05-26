@@ -10,6 +10,7 @@ public class MainMenu implements Menu {
         System.out.println("5. Atualizar dados de um livro");
         System.out.println("6. Exportar dados para txt");
         System.out.println("7. Ler dados de arquivo");
+        System.out.println("8. Criar arquivo csv");
         System.out.println("0. Sair do programa");
     }
 }
