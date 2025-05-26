@@ -41,18 +41,7 @@ public class BookOperations implements BookInputReader {
             System.out.println("Não existe nenhum livro com esse título");
             return;
         }
-        System.out.print(
-                "+----------------------------+-------------------------------+------+---------+--------------------------------------+\n");
-        System.out.printf(
-                "| %-26s | %-29s | %-4s | %-7s | %-36s |\n",
-                "Título", "Autor", "Ano", "Edição", "ID");
-        System.out.print(
-                "+----------------------------+-------------------------------+------+---------+--------------------------------------+\n");
-        for (Book book: bookList){
-            System.out.printf("| %-26s | %-29s | %-4d | %-7s | %-36s |\n", book.getTitle(), book.getAuthor(), book.getYear(), book.getEdition(), book.getId());
-
-        }
-        System.out.print("----------------------------------------------------------------------------------------------------------------------\n");
+        BookFormatter.formattedBookList(bookList);
 
     }
 
