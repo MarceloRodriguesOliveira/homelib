@@ -30,6 +30,7 @@ public class Main {
                 case 4 -> BookOperationsFactory.getMenu(OperationType.DELETE_BOOK);
                 case 5 -> BookOperationsFactory.getMenu(OperationType.UPDATE);
                 case 6 -> BookOperationsFactory.getMenu(OperationType.EXPORT);
+                case 7 -> BookOperationsFactory.getMenu(OperationType.IMPORT);
             }
         }
 
