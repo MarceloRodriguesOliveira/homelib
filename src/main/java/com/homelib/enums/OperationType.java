@@ -6,5 +6,6 @@ public enum OperationType {
     LIST_BOOKS,
     DELETE_BOOK,
     UPDATE,
-    EXPORT
+    EXPORT,
+    IMPORT
 }
