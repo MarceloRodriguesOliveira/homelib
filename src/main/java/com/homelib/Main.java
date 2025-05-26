@@ -1,6 +1,7 @@
 package com.homelib;
 
 
+import com.homelib.enums.FileIOOperationType;
 import com.homelib.enums.MenuType;
 import com.homelib.enums.OperationType;
 import com.homelib.factory.BookOperationsFactory;
@@ -24,13 +25,13 @@ public class Main {
             menuOption = Integer.parseInt(SCANNER.nextLine());
             if(menuOption == 0){break;}
             switch (menuOption){
-                case 1 -> BookOperationsFactory.getMenu(OperationType.LIST_BOOKS);
-                case 2 -> BookOperationsFactory.getMenu(OperationType.SEARCH_ID);
-                case 3 -> BookOperationsFactory.getMenu(OperationType.CREATE);
-                case 4 -> BookOperationsFactory.getMenu(OperationType.DELETE_BOOK);
-                case 5 -> BookOperationsFactory.getMenu(OperationType.UPDATE);
-                case 6 -> BookOperationsFactory.getMenu(OperationType.EXPORT);
-                case 7 -> BookOperationsFactory.getMenu(OperationType.IMPORT);
+                case 1 -> BookOperationsFactory.getInputMenu(OperationType.LIST_BOOKS);
+                case 2 -> BookOperationsFactory.getInputMenu(OperationType.SEARCH_ID);
+                case 3 -> BookOperationsFactory.getInputMenu(OperationType.CREATE);
+                case 4 -> BookOperationsFactory.getInputMenu(OperationType.DELETE_BOOK);
+                case 5 -> BookOperationsFactory.getInputMenu(OperationType.UPDATE);
+                case 6 -> BookOperationsFactory.getIOMenu(FileIOOperationType.EXPORT);
+                case 7 -> BookOperationsFactory.getIOMenu(FileIOOperationType.READ);
             }
         }
 
