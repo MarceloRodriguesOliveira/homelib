@@ -69,5 +69,9 @@ public class BookOperations implements BookInputReader {
         Writer.exportToTxt(bookListFromDb);
     }
 
+    public void readImportList(){
+        Writer.readFromFile();
+    }
+
 
 }
