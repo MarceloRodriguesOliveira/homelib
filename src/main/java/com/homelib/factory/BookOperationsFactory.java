@@ -29,6 +29,7 @@ public class BookOperationsFactory {
         switch (action){
             case READ -> bookOperations.readImportList();
             case EXPORT -> bookOperations.exportBookList();
+            case CSV_EXPORT -> bookOperations.exportListAsCsv();
         }
     }
 }

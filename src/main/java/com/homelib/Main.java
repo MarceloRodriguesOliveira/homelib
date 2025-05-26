@@ -7,6 +7,7 @@ import com.homelib.enums.OperationType;
 import com.homelib.factory.BookOperationsFactory;
 import com.homelib.factory.MenuFactory;
 
+import com.homelib.utils.BookOperations;
 import com.homelib.utils.Menu;
 import lombok.extern.log4j.Log4j2;
 
@@ -32,6 +33,7 @@ public class Main {
                 case 5 -> BookOperationsFactory.getInputMenu(OperationType.UPDATE);
                 case 6 -> BookOperationsFactory.getIOMenu(FileIOOperationType.EXPORT);
                 case 7 -> BookOperationsFactory.getIOMenu(FileIOOperationType.READ);
+                case 8 -> BookOperationsFactory.getIOMenu(FileIOOperationType.CSV_EXPORT);
             }
         }
 

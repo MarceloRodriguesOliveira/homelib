@@ -72,5 +72,10 @@ public class BookOperations implements BookInputReader {
         FileReaderHelper.readFromFile();
     }
 
+    public void exportListAsCsv(){
+        List<Book> bookListFromDb = bookService.findBookByName("");
+        OutputFileWriterHelper.exportCsv(bookListFromDb);
+    }
+
 
 }
