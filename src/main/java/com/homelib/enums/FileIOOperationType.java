@@ -2,5 +2,6 @@ package com.homelib.enums;
 
 public enum FileIOOperationType {
     READ,
-    EXPORT
+    EXPORT,
+    CSV_EXPORT
 }
