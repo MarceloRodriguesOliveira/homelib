@@ -3,7 +3,7 @@ package com.homelib.utils;
 import com.homelib.entities.Book;
 import com.homelib.output.formatter.BookFormatter;
 import com.homelib.output.io.FileReaderHelper;
-import com.homelib.output.io.Writer;
+import com.homelib.output.io.OutputFileWriterHelper;
 import com.homelib.service.BookService;
 
 import java.util.List;
@@ -65,7 +65,7 @@ public class BookOperations implements BookInputReader {
 
     public void exportBookList(){
         List<Book> bookListFromDb = bookService.findBookByName("");
-        Writer.exportToTxt(bookListFromDb);
+        OutputFileWriterHelper.exportToTxt(bookListFromDb);
     }
 
     public void readImportList(){
