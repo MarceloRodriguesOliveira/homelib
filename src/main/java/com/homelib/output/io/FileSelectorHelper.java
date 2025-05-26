@@ -8,7 +8,7 @@ public class FileSelectorHelper {
 
     public static JFileChooser selectFile(){
         JFileChooser fileChooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Only txt files", "txt");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Only txt and csv files", "txt", "csv");
         fileChooser.setFileFilter(filter);
         return fileChooser;
     }
