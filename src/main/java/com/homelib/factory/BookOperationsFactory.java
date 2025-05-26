@@ -25,6 +25,9 @@ public class BookOperationsFactory {
             case EXPORT ->{
                 bookOperations.exportBookList();
             }
+            case IMPORT -> {
+                bookOperations.readImportList();
+            }
         };
 
     }

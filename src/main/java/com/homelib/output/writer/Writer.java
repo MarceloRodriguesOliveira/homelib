@@ -26,7 +26,7 @@ public class Writer {
     }
 
     public static void readFromFile(){
-        String filePath = ("C:\\Users\\Marcelo\\Desktop\\DEV\\ExportedList.txt");
+        String filePath = ("C:\\Users\\Marcelo\\Desktop\\DEV\\ExportedListTest.txt");
         try(BufferedReader reader = new BufferedReader(new FileReader(filePath))){
             String line;
             while ((line = reader.readLine()) != null){
