@@ -3,6 +3,9 @@ package com.homelib.output.writer;
 import com.homelib.entities.Book;
 import com.homelib.output.formatter.BookFormatter;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
@@ -20,6 +23,21 @@ public class Writer {
             System.out.println("Could not write file");
 
         }
+    }
 
+    public static void readFromFile(){
+        String filePath = ("C:\\Users\\Marcelo\\Desktop\\DEV\\ExportedList.txt");
+        try(BufferedReader reader = new BufferedReader(new FileReader(filePath))){
+            String line;
+            while ((line = reader.readLine()) != null){
+                System.out.println(line);
+            }
+
+        }catch (FileNotFoundException e){
+            System.out.println("File not found");
+
+        } catch (IOException e) {
+            System.out.println("Erro ao acessar arquivo");
+        }
     }
 }
