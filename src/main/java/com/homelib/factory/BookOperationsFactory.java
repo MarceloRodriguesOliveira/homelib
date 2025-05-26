@@ -1,11 +1,12 @@
 package com.homelib.factory;
 
+import com.homelib.enums.FileIOOperationType;
 import com.homelib.enums.OperationType;
 import com.homelib.utils.BookOperations;
 
 public class BookOperationsFactory {
-    public static void getMenu(OperationType action){
-        BookOperations bookOperations = OperationsFactory.createBookOperations();
+    private static final BookOperations bookOperations = OperationsFactory.createBookOperations();
+    public static void getInputMenu(OperationType action){
         switch (action){
             case CREATE -> {
                 bookOperations.inputBook();
@@ -22,13 +23,12 @@ public class BookOperationsFactory {
             case UPDATE -> {
                 bookOperations.updateBook();
             }
-            case EXPORT ->{
-                bookOperations.exportBookList();
-            }
-            case IMPORT -> {
-                bookOperations.readImportList();
-            }
         };
-
+    }
+    public static void getIOMenu(FileIOOperationType action){
+        switch (action){
+            case READ -> bookOperations.readImportList();
+            case EXPORT -> bookOperations.exportBookList();
+        }
     }
 }

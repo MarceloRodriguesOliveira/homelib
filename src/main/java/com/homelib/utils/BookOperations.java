@@ -2,11 +2,10 @@ package com.homelib.utils;
 
 import com.homelib.entities.Book;
 import com.homelib.output.formatter.BookFormatter;
-import com.homelib.output.writer.Writer;
+import com.homelib.output.io.FileReaderHelper;
+import com.homelib.output.io.Writer;
 import com.homelib.service.BookService;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,7 +69,7 @@ public class BookOperations implements BookInputReader {
     }
 
     public void readImportList(){
-        Writer.readFromFile();
+        FileReaderHelper.readFromFile();
     }
 
 
