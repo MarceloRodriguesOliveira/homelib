@@ -1,0 +1,6 @@
+package com.homelib.enums;
+
+public enum FileIOOperationType {
+    READ,
+    EXPORT
+}
