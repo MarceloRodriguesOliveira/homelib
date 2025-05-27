@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class FileReaderHelper {
     public static void readFromFile(){
@@ -30,7 +31,7 @@ public class FileReaderHelper {
         }
     }
 
-    public static void readListFromCsv(){
+    public static Optional<List<Book>> readListFromCsv(){
         List<Book> bookList_CSV = new ArrayList<Book>();
         JFileChooser chooser = FileSelectorHelper.selectFile();
         int returnVal = chooser.showOpenDialog(null);
@@ -40,16 +41,15 @@ public class FileReaderHelper {
                 while ((line = reader.readLine()) != null){
                     bookList_CSV.add(BookFormatter.getCsvValueAsBook(line));
                 }
-                BookFormatter.formattedBookListFromCsv(bookList_CSV);
-                return;
+                return bookList_CSV.isEmpty() ? Optional.empty() : Optional.of(bookList_CSV);
             }catch (FileNotFoundException e){
                 System.out.println("File not found");
 
             }catch (IOException e){
-                System.out.println("Error while acessing file");
+                System.out.println("Error while accessing file");
 
             }
         }
-
+        return Optional.empty();
     }
 }
