@@ -154,6 +154,35 @@ public class BookRepository {
         return ps;
     }
 
+    public void saveFromImportedList(List<Book> importedBookList){
+        try(Connection conn = ConnectionFactory.getConnection();
+            PreparedStatement ps = createPreparedStatementSaveBatchFromFile(conn, importedBookList)){
+            conn.setAutoCommit(false);
+            ps.executeBatch();
+            conn.commit();
+        }catch (SQLException e){
+            System.err.println(e);
+        }
+
+    }
+
+    private static PreparedStatement createPreparedStatementSaveBatchFromFile(Connection conn, List<Book> bookList_csv) throws SQLException {
+        String sql = "INSERT INTO `book_store` (`title`, `firstnameauthor`, `lastnameauthor`, `year`, `edition`) VALUES (?, ?, ?, ?, ?)";
+        PreparedStatement ps = conn.prepareStatement(sql);
+
+        for(Book book: bookList_csv){
+            ps.setString(1, book.getTitle());
+            ps.setString(2, book.getFirstNameAuthor());
+            ps.setString(3, book.getLastNameAuthor());
+            ps.setInt(4, book.getYear());
+            ps.setInt(5, book.getEdition());
+            ps.addBatch();
+        }
+
+        return ps;
+
+    }
+
 
 
 
