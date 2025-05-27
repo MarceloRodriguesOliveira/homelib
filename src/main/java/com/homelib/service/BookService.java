@@ -2,6 +2,7 @@ package com.homelib.service;
 
 import com.homelib.entities.Book;
 import com.homelib.entities.GlobalStore;
+import com.homelib.output.io.FileReaderHelper;
 import com.homelib.repository.BookRepository;
 import com.homelib.utils.BookInputReader;
 import lombok.extern.log4j.Log4j2;
@@ -52,6 +53,13 @@ public class BookService {
         bookRepository.update(book);
     }
 
-
-
+    public void saveBookInBatch(){
+        Optional<List<Book>> list = FileReaderHelper.readListFromCsv();
+        if(list.isEmpty()){
+            System.out.println("Essa lista ta vazia");
+            return;
+        }
+        List<Book> recList = list.get().stream().toList();
+        bookRepository.saveFromImportedList(recList);
+    }
 }

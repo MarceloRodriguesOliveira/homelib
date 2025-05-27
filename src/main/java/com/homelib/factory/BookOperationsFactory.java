@@ -30,6 +30,7 @@ public class BookOperationsFactory {
             case READ -> bookOperations.readImportList();
             case EXPORT -> bookOperations.exportBookList();
             case CSV_EXPORT -> bookOperations.exportListAsCsv();
+            case CSV_IMPORT -> bookOperations.importListFromFile();
         }
     }
 }

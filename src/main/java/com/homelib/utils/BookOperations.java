@@ -4,6 +4,7 @@ import com.homelib.entities.Book;
 import com.homelib.output.formatter.BookFormatter;
 import com.homelib.output.io.FileReaderHelper;
 import com.homelib.output.io.OutputFileWriterHelper;
+import com.homelib.repository.BookRepository;
 import com.homelib.service.BookService;
 
 import java.util.List;
@@ -75,6 +76,10 @@ public class BookOperations implements BookInputReader {
     public void exportListAsCsv(){
         List<Book> bookListFromDb = bookService.findBookByName("");
         OutputFileWriterHelper.exportCsv(bookListFromDb);
+    }
+
+    public void importListFromFile(){
+        bookService.saveBookInBatch();
     }
 
 
