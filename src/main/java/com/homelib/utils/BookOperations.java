@@ -69,7 +69,7 @@ public class BookOperations implements BookInputReader {
     }
 
     public void readImportList(){
-        FileReaderHelper.readFromFile();
+        FileReaderHelper.readListFromCsv();
     }
 
     public void exportListAsCsv(){
