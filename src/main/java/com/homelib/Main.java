@@ -1,6 +1,7 @@
 package com.homelib;
 
 
+import com.homelib.entities.Book;
 import com.homelib.enums.FileIOOperationType;
 import com.homelib.enums.MenuType;
 import com.homelib.enums.OperationType;
@@ -34,6 +35,7 @@ public class Main {
                 case 6 -> BookOperationsFactory.getIOMenu(FileIOOperationType.EXPORT);
                 case 7 -> BookOperationsFactory.getIOMenu(FileIOOperationType.READ);
                 case 8 -> BookOperationsFactory.getIOMenu(FileIOOperationType.CSV_EXPORT);
+                case 9 -> BookOperationsFactory.getIOMenu(FileIOOperationType.CSV_IMPORT);
             }
         }
 
