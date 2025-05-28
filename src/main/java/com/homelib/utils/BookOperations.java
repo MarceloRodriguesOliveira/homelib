@@ -10,24 +10,26 @@ import com.homelib.service.BookService;
 import java.util.List;
 import java.util.Optional;
 
-public class BookOperations implements BookInputReader {
+public class BookOperations {
     private final BookService bookService;
     private final FileReaderHelper fileReaderHelper;
     private final OutputFileWriterHelper outputFileWriterHelper;
+    private final BookInputReader bookInputReader;
 
-    public BookOperations(BookService bookService, FileReaderHelper fileReaderHelper, OutputFileWriterHelper outputFileWriterHelper ) {
+    public BookOperations(BookService bookService, FileReaderHelper fileReaderHelper, OutputFileWriterHelper outputFileWriterHelper, BookInputReader bookInputReader ) {
         this.bookService = bookService;
         this.fileReaderHelper = fileReaderHelper;
         this.outputFileWriterHelper = outputFileWriterHelper;
+        this.bookInputReader = bookInputReader;
     }
 
     public void inputBook(){
-        Book createBook = this.readBook();
+        Book createBook = bookInputReader.readBook();
         bookService.createNewBook(createBook);
     }
 
     public void inputId(){
-        int id = this.readId();
+        int id = bookInputReader.readId();
         Optional<Book> bookFromDb = bookService.findById(id);
         if(bookFromDb.isEmpty()){
             System.out.println("Não existe livro com essa identificação");
@@ -39,7 +41,7 @@ public class BookOperations implements BookInputReader {
     }
 
     public void listBookByName(){
-        String title = this.listBooks();
+        String title = bookInputReader.listBooks();
         List<Book> bookList = bookService.findBookByName(title);
         if(bookList.isEmpty()){
             System.out.println("Não existe nenhum livro com esse título");
@@ -50,12 +52,12 @@ public class BookOperations implements BookInputReader {
     }
 
     public void deleteBook(){
-        int id = readIdDelete();
+        int id = bookInputReader.readIdDelete();
         bookService.deleteBookById(id);
     }
 
     public void updateBook(){
-        int id = readIdUpdate();
+        int id = bookInputReader.readIdUpdate();
         var output = bookService.findById(id);
 
         if (output.isEmpty()){
@@ -63,7 +65,7 @@ public class BookOperations implements BookInputReader {
             return;
         }
 
-        Book updatedBook = readBook();
+        Book updatedBook = bookInputReader.readBook();
         updatedBook.setId(id);
         bookService.updateBook(updatedBook);
     }
