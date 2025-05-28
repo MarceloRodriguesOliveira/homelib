@@ -12,9 +12,13 @@ import java.util.Optional;
 
 public class BookOperations implements BookInputReader {
     private final BookService bookService;
+    private final FileReaderHelper fileReaderHelper;
+    private final OutputFileWriterHelper outputFileWriterHelper;
 
-    public BookOperations(BookService bookService) {
+    public BookOperations(BookService bookService, FileReaderHelper fileReaderHelper, OutputFileWriterHelper outputFileWriterHelper ) {
         this.bookService = bookService;
+        this.fileReaderHelper = fileReaderHelper;
+        this.outputFileWriterHelper = outputFileWriterHelper;
     }
 
     public void inputBook(){
@@ -66,20 +70,26 @@ public class BookOperations implements BookInputReader {
 
     public void exportBookList(){
         List<Book> bookListFromDb = bookService.findBookByName("");
-        OutputFileWriterHelper.exportToTxt(bookListFromDb);
+        outputFileWriterHelper.exportToTxt(bookListFromDb);
     }
 
     public void readImportList(){
-        FileReaderHelper.readListFromCsv();
+        fileReaderHelper.readListFromCsv();
     }
 
     public void exportListAsCsv(){
         List<Book> bookListFromDb = bookService.findBookByName("");
-        OutputFileWriterHelper.exportCsv(bookListFromDb);
+        outputFileWriterHelper.exportCsv(bookListFromDb);
     }
 
     public void importListFromFile(){
-        bookService.saveBookInBatch();
+        Optional<List<Book>> list = fileReaderHelper.readListFromCsv();
+        if(list.isEmpty()){
+            System.out.println("Essa lista ta vazia");
+            return;
+        }
+        List<Book> recList = list.get().stream().toList();
+        bookService.saveBookInBatch(recList);
     }
 
 
