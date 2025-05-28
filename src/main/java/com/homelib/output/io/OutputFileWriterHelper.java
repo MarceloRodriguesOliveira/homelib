@@ -14,7 +14,11 @@ import java.io.IOException;
 import java.util.List;
 
 public class OutputFileWriterHelper {
-    public static void exportToTxt(List<Book> bookList){
+    private final FileSelectorHelper fileSelectorHelper;
+    public OutputFileWriterHelper(FileSelectorHelper fileSelectorHelper){
+        this.fileSelectorHelper = fileSelectorHelper;
+    }
+    public void exportToTxt(List<Book> bookList){
         try(FileWriter writer = new FileWriter("C:\\Users\\Marcelo\\Desktop\\DEV\\ExportedListTest.txt")){
             for (Book book:bookList){
                 String fmString = BookFormatter.toExport(book);
@@ -28,8 +32,8 @@ public class OutputFileWriterHelper {
         }
     }
 
-    public static void exportCsv(List<Book> books){
-        JFileChooser chooser = FileSelectorHelper.selectFile();
+    public void exportCsv(List<Book> books){
+        JFileChooser chooser = fileSelectorHelper.selectFile();
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int returnVal = chooser.showOpenDialog(null);
         if(returnVal == JFileChooser.APPROVE_OPTION){
