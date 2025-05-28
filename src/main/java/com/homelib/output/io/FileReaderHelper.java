@@ -13,8 +13,12 @@ import java.util.List;
 import java.util.Optional;
 
 public class FileReaderHelper {
-    public static void readFromFile(){
-        JFileChooser chooser = FileSelectorHelper.selectFile();
+    private final FileSelectorHelper fileSelectorHelper;
+    public FileReaderHelper(FileSelectorHelper fileSelectorHelper){
+        this.fileSelectorHelper = fileSelectorHelper;
+    }
+    public void readFromFile(){
+        JFileChooser chooser = fileSelectorHelper.selectFile();
         int returnVal = chooser.showOpenDialog(null);
         if(returnVal == JFileChooser.APPROVE_OPTION){
             try(BufferedReader reader = new BufferedReader(new FileReader(chooser.getSelectedFile()))){
@@ -31,9 +35,9 @@ public class FileReaderHelper {
         }
     }
 
-    public static Optional<List<Book>> readListFromCsv(){
+    public Optional<List<Book>> readListFromCsv(){
         List<Book> bookList_CSV = new ArrayList<Book>();
-        JFileChooser chooser = FileSelectorHelper.selectFile();
+        JFileChooser chooser = fileSelectorHelper.selectFile();
         int returnVal = chooser.showOpenDialog(null);
         if (returnVal == JFileChooser.APPROVE_OPTION){
             try(BufferedReader reader = new BufferedReader(new FileReader(chooser.getSelectedFile()))){
