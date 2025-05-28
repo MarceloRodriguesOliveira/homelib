@@ -46,6 +46,8 @@ class BookServiceTest {
 
     private Book book;
 
+    private List<Book> importedBooks;
+
     @BeforeEach
     void setUp(){
         book = Book.BookBuilder
@@ -56,6 +58,8 @@ class BookServiceTest {
                     .year(1970)
                     .edition(1)
                     .build();
+
+        importedBooks = List.of(book);
     }
 
     @Nested
@@ -209,6 +213,17 @@ class BookServiceTest {
 
             assertEquals(anyId, bookArgumentCaptor.getValue().getId());
 
+        }
+    }
+
+    @Nested
+    class saveBookInBatch{
+        @Test
+        @DisplayName("Should save batch data retrieved from csv file")
+        void shouldSaveBatchDataRetrievedFromCsvFile(){
+            bookService.saveBookInBatch(importedBooks);
+
+            verify(bookRepository).saveFromImportedList(importedBooks);
         }
     }
 
