@@ -53,13 +53,7 @@ public class BookService {
         bookRepository.update(book);
     }
 
-    public void saveBookInBatch(){
-        Optional<List<Book>> list = FileReaderHelper.readListFromCsv();
-        if(list.isEmpty()){
-            System.out.println("Essa lista ta vazia");
-            return;
-        }
-        List<Book> recList = list.get().stream().toList();
-        bookRepository.saveFromImportedList(recList);
+    public void saveBookInBatch(List<Book> importedList){
+        bookRepository.saveFromImportedList(importedList);
     }
 }
