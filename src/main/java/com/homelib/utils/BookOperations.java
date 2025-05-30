@@ -48,7 +48,6 @@ public class BookOperations {
             return;
         }
         BookFormatter.formattedBookList(bookList);
-
     }
 
     public void deleteBook(){
@@ -86,7 +85,7 @@ public class BookOperations {
 
     public void importListFromFile(){
         Optional<List<Book>> list = fileReaderHelper.readListFromCsv();
-        if(list.isEmpty()){
+        if(list.isEmpty() || list.get().isEmpty()){
             System.out.println("Essa lista ta vazia");
             return;
         }
