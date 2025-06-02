@@ -13,14 +13,14 @@ public class BookFormatter {
     }
 
     public static String formatAsCsv(Book book){
-        return String.format("%s,%s,%d ed,%d", book.getTitle(), book.getAuthor(), book.getEdition(), book.getYear());
+        return String.format("%s,%s,%s,%d ed,%d", book.getTitle(), book.getFirstNameAuthor(),book.getLastNameAuthor(), book.getEdition(), book.getYear());
     }
 
     public static Book getCsvValueAsBook(String line){
         Pattern csvSplit = Pattern.compile(",");
         String[] fields = csvSplit.split(line);
 
-        if(fields.length < 5 ){
+        if(fields.length < 5  ){
             throw new IllegalArgumentException("Formato da linha invalido "+ line);
         }
 
