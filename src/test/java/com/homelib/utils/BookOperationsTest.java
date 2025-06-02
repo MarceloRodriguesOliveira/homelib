@@ -296,6 +296,17 @@ class BookOperationsTest {
             bookFormatterMockedStatic.verify(()-> BookFormatter.formattedBookListFromCsv(emptyListFromFile.get()), never());
 
         }
+
+        @Test
+        @DisplayName("Should not read if file is missing")
+        void shouldNotReadIfFileIsMissing(){
+            doReturn(Optional.empty()).when(fileReaderHelper).readListFromCsv();
+
+            bookOperations.readImportList();
+
+            verify(fileReaderHelper).readListFromCsv();
+            bookFormatterMockedStatic.verify(()-> BookFormatter.formattedBookListFromCsv(anyList()), never());
+        }
     }
 
 
