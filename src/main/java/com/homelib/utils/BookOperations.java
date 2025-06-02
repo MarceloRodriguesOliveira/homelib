@@ -69,11 +69,6 @@ public class BookOperations {
         bookService.updateBook(updatedBook);
     }
 
-    public void exportBookList(){
-        List<Book> bookListFromDb = bookService.findBookByName("");
-        outputFileWriterHelper.exportToTxt(bookListFromDb);
-    }
-
     public void readImportList(){
         Optional<List<Book>> listFromCsv = fileReaderHelper.readListFromCsv();
         if(listFromCsv.isEmpty() || listFromCsv.get().isEmpty()){
