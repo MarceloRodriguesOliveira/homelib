@@ -267,7 +267,37 @@ class BookOperationsTest {
             verify(fileReaderHelper).readListFromCsv();
             verify(bookService, never()).saveBookInBatch(anyList());
         }
-
-
     }
+
+    @Nested
+    class readImportList{
+        @Test
+        @DisplayName("Should read an imported list on terminal")
+        void shouldReadImportedListOnTerminal(){
+            Optional<List<Book>> listFromFile = Optional.of(bookList);
+            doReturn(listFromFile).when(fileReaderHelper).readListFromCsv();
+
+            bookOperations.readImportList();
+
+
+            verify(fileReaderHelper).readListFromCsv();
+            bookFormatterMockedStatic.verify(()-> BookFormatter.formattedBookListFromCsv(listFromFile.get()), times(1));
+        }
+
+        @Test
+        @DisplayName("Should not read if file is empty")
+        void shouldNotReadIfFileIsEmpty(){
+            Optional<List<Book>> emptyListFromFile = Optional.of(Collections.emptyList());
+            doReturn(emptyListFromFile).when(fileReaderHelper).readListFromCsv();
+
+            bookOperations.readImportList();
+
+            verify(fileReaderHelper).readListFromCsv();
+            bookFormatterMockedStatic.verify(()-> BookFormatter.formattedBookListFromCsv(emptyListFromFile.get()), never());
+
+        }
+    }
+
+
+
 }
