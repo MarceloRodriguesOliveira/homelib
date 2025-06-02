@@ -75,7 +75,12 @@ public class BookOperations {
     }
 
     public void readImportList(){
-        fileReaderHelper.readListFromCsv();
+        Optional<List<Book>> listFromCsv = fileReaderHelper.readListFromCsv();
+        if(listFromCsv.isEmpty() || listFromCsv.get().isEmpty()){
+            return;
+        }
+        List<Book> bookList = listFromCsv.get();
+        BookFormatter.formattedBookListFromCsv(bookList);
     }
 
     public void exportListAsCsv(){
