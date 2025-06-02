@@ -32,10 +32,9 @@ public class Main {
                 case 3 -> BookOperationsFactory.getInputMenu(OperationType.CREATE);
                 case 4 -> BookOperationsFactory.getInputMenu(OperationType.DELETE_BOOK);
                 case 5 -> BookOperationsFactory.getInputMenu(OperationType.UPDATE);
-                case 6 -> BookOperationsFactory.getIOMenu(FileIOOperationType.EXPORT);
-                case 7 -> BookOperationsFactory.getIOMenu(FileIOOperationType.READ);
-                case 8 -> BookOperationsFactory.getIOMenu(FileIOOperationType.CSV_EXPORT);
-                case 9 -> BookOperationsFactory.getIOMenu(FileIOOperationType.CSV_IMPORT);
+                case 6 -> BookOperationsFactory.getIOMenu(FileIOOperationType.CSV_READ);
+                case 7 -> BookOperationsFactory.getIOMenu(FileIOOperationType.CSV_EXPORT);
+                case 8 -> BookOperationsFactory.getIOMenu(FileIOOperationType.CSV_IMPORT);
             }
         }
 
