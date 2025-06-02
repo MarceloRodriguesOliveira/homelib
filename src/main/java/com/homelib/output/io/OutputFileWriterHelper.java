@@ -18,19 +18,6 @@ public class OutputFileWriterHelper {
     public OutputFileWriterHelper(FileSelectorHelper fileSelectorHelper){
         this.fileSelectorHelper = fileSelectorHelper;
     }
-    public void exportToTxt(List<Book> bookList){
-        try(FileWriter writer = new FileWriter("C:\\Users\\Marcelo\\Desktop\\DEV\\ExportedListTest.txt")){
-            for (Book book:bookList){
-                String fmString = BookFormatter.toExport(book);
-                writer.write(fmString + "\n");
-            }
-            System.out.println("File has been Written");
-
-        }catch (IOException e){
-            System.out.println("Could not write file");
-
-        }
-    }
 
     public void exportCsv(List<Book> books){
         JFileChooser chooser = fileSelectorHelper.selectFile();
