@@ -19,10 +19,6 @@ import java.util.UUID;
 
 @Log4j2
 public class BookRepository {
-    public static void saveToDatabase(Book book){
-        GlobalStore.getInstance().getData().add(book);
-    }
-
     public Book save(Book book){
         try(Connection conn = ConnectionFactory.getConnection(); PreparedStatement ps = createPrepareStatementSave(conn, book);) {
             ps.execute();
