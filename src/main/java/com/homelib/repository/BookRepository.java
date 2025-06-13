@@ -3,8 +3,6 @@ package com.homelib.repository;
 
 import com.homelib.connection.ConnectionFactory;
 import com.homelib.entities.Book;
-import com.homelib.entities.GlobalStore;
-import com.homelib.service.BookService;
 import lombok.extern.log4j.Log4j2;
 
 import java.sql.Connection;
@@ -15,7 +13,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Log4j2
 public class BookRepository {
