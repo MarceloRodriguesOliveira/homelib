@@ -2,6 +2,7 @@ package com.homelib.repository;
 
 import com.homelib.connection.ConnectionFactory;
 import com.homelib.entities.Author;
+import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,9 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Log4j2
 public class AuthorRepository {
 
-    private static final Logger log = LogManager.getLogger(AuthorRepository.class);
 
     public List<Long> SaveAuthors(Connection conn, List<Author> authors) throws SQLException {
         if(authors.size() == 1 ){
@@ -27,38 +28,25 @@ public class AuthorRepository {
     }
 
     public List<Long> saveAuthorsBatch(Connection conn, List<Author> authors) throws SQLException {
-        if(authors == null || authors.isEmpty()) return List.of();
-        List<Long> generatedIds = new ArrayList<>();
-        List<Author> authorsToInsert = new ArrayList<>();
-
-        for (Author author:authors){
-            Optional<Long> existingId = findAuthorByName(conn, author);
-            if(existingId.isPresent()){
-                generatedIds.add(existingId.get());
-            }else authorsToInsert.add(author);
-        }
-
-        try(PreparedStatement ps = createPreparedStatementSaveAuthorBatch(conn)){
-            for (Author author: authorsToInsert){
+        try(PreparedStatement ps =createPreparedStatementSaveAuthorBatch(conn)){
+            for (Author author : authors){
                 ps.setString(1, author.getFirstName());
                 ps.setString(2, author.getLastName());
                 ps.addBatch();
             }
             ps.executeBatch();
-
-            try(ResultSet rs = ps.getGeneratedKeys()){
-                while (rs.next()){
-                    generatedIds.add(rs.getLong(1));
-                }
-            }
         }
-        return generatedIds;
+        List<Long> ids = new ArrayList<>();
+        for (Author author : authors){
+            findAuthorByName(conn, author).ifPresent(ids::add);
+        }
+        return ids;
     }
 
     public Long saveSingleAuthor(Connection conn, Author author) throws SQLException {
         Optional<Long> existingId = findAuthorByName(conn, author);
         if(existingId.isPresent()){
-            log.info("Author already exists on database. Aborting insert...");
+            log.info("Author already exists on database. Associating book...");
             return existingId.get();
         }
         try(PreparedStatement ps = createPreparedStatementSaveSingleAuthor(conn, author)){
@@ -79,13 +67,13 @@ public class AuthorRepository {
             if(!rs.next()) return Optional.empty();
             return Optional.of(rs.getLong(1));
         }catch (SQLException e){
-            log.error("Could not retrieve info on author");
+            log.error("Could not retrieve info on author", e);
         }
         return Optional.empty();
     }
 
     private static PreparedStatement createPreparedStatementSaveSingleAuthor(Connection conn, Author author) throws SQLException {
-        String sql = "INSERT INTO author_store (first_name, last_name) VALUES (?, ?)";
+        String sql = "INSERT OR IGNORE INTO author_store (first_name, last_name) VALUES (?, ?)";
         PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         ps.setString(1, author.getFirstName());
         ps.setString(2, author.getLastName());
@@ -93,7 +81,7 @@ public class AuthorRepository {
     }
 
     private static PreparedStatement createPreparedStatementSaveAuthorBatch(Connection conn) throws SQLException{
-        String sql = "INSERT INTO author_store (first_name, last_name) VALUES (?, ?)";
+        String sql = "INSERT OR IGNORE INTO author_store (first_name, last_name) VALUES (?, ?)";
         return conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     }
 
