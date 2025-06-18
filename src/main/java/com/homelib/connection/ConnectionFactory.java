@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 @Log4j2
 public class ConnectionFactory {
-    private static final String URL = "jdbc:sqlite:C:\\Users\\Marcelo\\Documents\\Java\\homelib\\src\\main\\java\\com\\homelib\\db\\dbfortesting.db";
+    private static final String URL = "jdbc:sqlite:C:\\Users\\Marcelo\\Documents\\Java\\homelib\\src\\main\\java\\com\\homelib\\db\\newtabletesting.db";
     public static Connection getConnection() throws SQLException {
         try{
             Connection conn = DriverManager.getConnection(URL);
