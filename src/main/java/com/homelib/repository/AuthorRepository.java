@@ -46,7 +46,7 @@ public class AuthorRepository {
     public Long saveSingleAuthor(Connection conn, Author author) throws SQLException {
         Optional<Long> existingId = findAuthorByName(conn, author);
         if(existingId.isPresent()){
-            log.info("Author already exists on database. Associating book...");
+            log.info("Author {} {} already exists on database. Associating book...", author.getFirstName(), author.getLastName());
             return existingId.get();
         }
         try(PreparedStatement ps = createPreparedStatementSaveSingleAuthor(conn, author)){
