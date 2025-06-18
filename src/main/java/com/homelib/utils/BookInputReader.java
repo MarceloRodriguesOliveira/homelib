@@ -11,5 +11,5 @@ public interface BookInputReader {
     int readId();
     String listBooks();
     int readIdDelete();
-    int readIdUpdate();
+    Long readIdUpdate();
 }
