@@ -4,6 +4,7 @@ package com.homelib.repository;
 import com.homelib.connection.ConnectionFactory;
 import com.homelib.entities.Author;
 import com.homelib.entities.Book;
+import com.homelib.enums.PublisherLocale;
 import lombok.extern.log4j.Log4j2;
 
 import java.sql.Connection;
@@ -14,15 +15,42 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Log4j2
 public class BookRepository {
     AuthorRepository authorRepository = new AuthorRepository();
     BookAuthorRepository bookAuthorRepository = new BookAuthorRepository();
-    public Book save(Book book){
-        try(Connection conn = ConnectionFactory.getConnection(); PreparedStatement ps = createPrepareStatementSave(conn, book);) {
+
+    public Book SaveWithAuthors(Book book){
+        try(Connection conn = ConnectionFactory.getConnection()){
+            conn.setAutoCommit(false);
+
+            try{
+                List<Long> authorIds = authorRepository.SaveAuthors(conn, book.getAuthors());
+                Book savedBook = save(conn, book);
+                bookAuthorRepository.saveBookAuthorLink(conn, savedBook.getId(), authorIds);
+
+                conn.commit();
+                return savedBook;
+
+            }catch (SQLException e){
+                conn.rollback();
+                throw new RuntimeException("Failed to save book alongside authors", e);
+            }
+
+        }catch (SQLException e){
+            throw new RuntimeException("Connection failed", e);
+        }
+
+    }
+
+
+    public Book save(Connection conn,Book book){
+        try(PreparedStatement ps = createPrepareStatementSave(conn, book);) {
             ps.execute();
             authorRepository.SaveAuthors(conn, book.getAuthors());
 
@@ -36,6 +64,8 @@ public class BookRepository {
             throw new RuntimeException(e);
         }
     }
+
+
 
     public Long saveSingleBook(Connection conn, Book book) throws SQLException{
         try(PreparedStatement ps = createPrepareStatementSave(conn, book)){
@@ -63,34 +93,62 @@ public class BookRepository {
     }
 
     public List<Book> findAllBooks(String title){
-        List<Book> booksFound = new ArrayList<Book>();
-        List<Author> bookAuthors = new ArrayList<>();
+        Map<Long, Book> bookMap = new LinkedHashMap<>();
         try(Connection conn = ConnectionFactory.getConnection();
             PreparedStatement ps = createPreparedStatementFindByTitle(conn, title);
             ResultSet rs = ps.executeQuery()){
+
             while (rs.next()){
-                Book book = Book.BookBuilder
-                        .builder()
-                        .title(rs.getString("title"))
-                        .authors(List.of(new Author(rs.getString("firstnameauthor"), rs.getString("lastnameauthor"))))
-                        .year(rs.getInt("year"))
-                        .edition(rs.getInt("edition"))
-                        .id(rs.getLong("id"))
-                        .build();
-                booksFound.add(book);
+                long bookId = rs.getLong("book_id");
+
+                Book book = bookMap.get(bookId);
+                if(book == null){
+                    book = Book.BookBuilder
+                            .builder()
+                            .id(bookId)
+                            .title(rs.getString("title"))
+                            .year(rs.getInt("year"))
+                            .edition(rs.getInt("edition"))
+                            .publisher(rs.getString("publisher"))
+                            .locale(PublisherLocale.valueOf(rs.getString("locale")))
+                            .authors(new ArrayList<>())
+                            .build();
+                    bookMap.put(bookId, book);
+                }
+
+                Author author = new Author(
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getLong("author_id")
+                );
+                book.getAuthors().add(author);
             }
         }catch (SQLException e){
             log.error("Error while retrieving data");
+            e.printStackTrace();
         }
-        return booksFound;
+        return new ArrayList<>(bookMap.values());
     }
 
     public static PreparedStatement createPreparedStatementFindByTitle(Connection conn, String title) throws SQLException {
         String sql = """
-                     SELECT title, year, edition, id, publisher, locale FROM book_store WHERE title LIKE ?;
-                     """;
+        SELECT 
+            b.id AS book_id,
+            b.title,
+            b.year,
+            b.edition,
+            b.publisher,
+            b.locale,
+            a.id AS author_id,
+            a.first_name,
+            a.last_name
+        FROM book_store b
+        LEFT JOIN book_author ba ON b.id = ba.book_id
+        LEFT JOIN author_store a ON ba.author_id = a.id
+        WHERE b.title LIKE ?;
+    """;
         PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, String.format("%%%s%%", title));
+        ps.setString(1, "%" + title + "%");
         return ps;
     }
 
