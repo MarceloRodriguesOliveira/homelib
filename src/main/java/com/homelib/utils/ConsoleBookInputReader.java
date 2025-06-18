@@ -41,7 +41,9 @@ public class ConsoleBookInputReader implements BookInputReader {
         Integer edition = Integer.parseInt(SCANNER.nextLine());
         System.out.println("Type the publisher");
         String publisher = SCANNER.nextLine();
-        Book createBook = Book
+        System.out.println("Insert country/localization");
+        String locale = SCANNER.nextLine();
+        return Book
                 .BookBuilder
                 .builder()
                 .title(title)
@@ -49,9 +51,8 @@ public class ConsoleBookInputReader implements BookInputReader {
                 .year(year)
                 .edition(edition)
                 .publisher(publisher)
-                .locale(PublisherLocale.BRAZIL)
+                .locale(locale != null && !locale.isBlank() ? PublisherLocale.valueOf(locale.toUpperCase()): null)
                 .build();
-        return createBook;
     }
 
     @Override
