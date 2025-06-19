@@ -1,10 +1,9 @@
 package com.homelib.repository;
 
-import com.homelib.connection.ConnectionFactory;
+
 import com.homelib.entities.Author;
 import lombok.extern.log4j.Log4j2;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,8 +16,6 @@ import java.util.Optional;
 
 @Log4j2
 public class AuthorRepository {
-
-
     public List<Long> SaveAuthors(Connection conn, List<Author> authors) throws SQLException {
         if(authors.size() == 1 ){
             return List.of(saveSingleAuthor(conn,authors.getFirst()));
@@ -92,5 +89,4 @@ public class AuthorRepository {
         ps.setString(2, author.getLastName());
         return ps;
     }
-
 }
