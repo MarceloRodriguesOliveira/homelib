@@ -1,17 +1,12 @@
 package com.homelib.service;
 
 import com.homelib.entities.Book;
-import com.homelib.entities.GlobalStore;
-import com.homelib.output.io.FileReaderHelper;
 import com.homelib.repository.BookRepository;
-import com.homelib.utils.BookInputReader;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Scanner;
-import java.util.UUID;
 
 @Log4j2
 public class BookService {
@@ -27,17 +22,17 @@ public class BookService {
         return new ArrayList<>(bookRepository.findAllBooks(title));
     }
 
-    public Optional<Book> findById(int id){
+    public Optional<Book> findById(Long id){
         return bookRepository.findById(id);
     }
 
-    public int createNewBook(Book book){
-        Book createdBook = bookRepository.save(book);
+    public Long createNewBook(Book book){
+        Book createdBook = bookRepository.SaveWithAuthors(book);
         return createdBook.getId();
     }
 
 
-    public void deleteBookById(int id){
+    public void deleteBookById(Long id){
         var idExists = findById(id);
 
         if(idExists.isPresent()){
