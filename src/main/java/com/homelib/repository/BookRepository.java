@@ -244,11 +244,11 @@ public class BookRepository {
 
 
     public static PreparedStatement createPreparedStatementUpdate(Connection conn, Book book) throws SQLException{
-        String sql = "UPDATE `book_store` SET `title` = ?, `firstnameauthor` = ?, `lastnameauthor` = ?, `year` = ?, `edition` = ? WHERE (`id` = ?)";
+        String sql = "UPDATE `book_store` SET `title` = ?, `publisher` = ?, `locale` = ?, `year` = ?, `edition` = ? WHERE (`id` = ?)";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setString(1, book.getTitle());
-        ps.setString(2, book.getFirstNameAuthor());
-        ps.setString(3, book.getLastNameAuthor());
+        ps.setString(2, book.getPublisher());
+        ps.setString(3, String.valueOf(book.getLocale()));
         ps.setInt(4, book.getYear());
         ps.setInt(5, book.getEdition());
         ps.setLong(6, book.getId());
@@ -269,13 +269,13 @@ public class BookRepository {
     }
 
     private static PreparedStatement createPreparedStatementSaveBatchFromFile(Connection conn, List<Book> bookList_csv) throws SQLException {
-        String sql = "INSERT INTO `book_store` (`title`, `firstnameauthor`, `lastnameauthor`, `year`, `edition`) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO `book_store` (`title`, `publisher`, `locale`, `year`, `edition`) VALUES (?, ?, ?, ?, ?)";
         PreparedStatement ps = conn.prepareStatement(sql);
 
         for(Book book: bookList_csv){
             ps.setString(1, book.getTitle());
-            ps.setString(2, book.getFirstNameAuthor());
-            ps.setString(3, book.getLastNameAuthor());
+            ps.setString(2, book.getPublisher());
+            ps.setString(3, String.valueOf(book.getLocale()));
             ps.setInt(4, book.getYear());
             ps.setInt(5, book.getEdition());
             ps.addBatch();
