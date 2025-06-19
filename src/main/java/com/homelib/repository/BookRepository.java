@@ -52,7 +52,7 @@ public class BookRepository {
     public Book save(Connection conn,Book book){
         try(PreparedStatement ps = createPrepareStatementSave(conn, book);) {
             ps.execute();
-            authorRepository.SaveAuthors(conn, book.getAuthors());
+
 
             try( ResultSet rs = ps.getGeneratedKeys();){
                 if(rs.next()){
@@ -132,7 +132,7 @@ public class BookRepository {
 
     public static PreparedStatement createPreparedStatementFindByTitle(Connection conn, String title) throws SQLException {
         String sql = """
-        SELECT 
+        SELECT
             b.id AS book_id,
             b.title,
             b.year,
@@ -155,27 +155,59 @@ public class BookRepository {
 
 
     public Optional<Book> findById(Long targetID){
+        Book book = null;
         try(Connection conn = ConnectionFactory.getConnection();
             PreparedStatement ps = createPreparedStatementFindById(conn, targetID);
             ResultSet rs = ps.executeQuery();
         ){
-            if(!rs.next()) return Optional.empty();
-            return Optional.of(Book.BookBuilder
-                    .builder()
-                    .title(rs.getString("title"))
-                    .authors(List.of(new Author(rs.getString("firstnameauthor"), rs.getString("lastnameauthor"))))
-                    .year(rs.getInt("year"))
-                    .edition(rs.getInt("edition"))
-                    .id(rs.getLong("id"))
-                    .build());
+            while (rs.next()){
+                if (book == null){
+                    book = Book.BookBuilder
+                            .builder()
+                            .title(rs.getString("title"))
+                            .year(rs.getInt("year"))
+                            .edition(rs.getInt("edition"))
+                            .publisher(rs.getString("publisher"))
+                            .locale(PublisherLocale.valueOf(rs.getString("locale")))
+                            .authors(new ArrayList<>())
+                            .id(rs.getLong("book_id"))
+                            .build();
+                }
+                long authorId = rs.getLong("author_id");
+                if (authorId != 0) {
+                    Author author = new Author(
+                            rs.getString("first_name"),
+                            rs.getString("last_name"),
+                            authorId
+                    );
+                    book.getAuthors().add(author);
+                }
+            }
+            return Optional.ofNullable(book);
         }catch (SQLException e){
             log.error("Error while searching for this id");
+            e.printStackTrace();
         }
         return Optional.empty();
     }
 
     public static PreparedStatement createPreparedStatementFindById(Connection conn, Long id) throws SQLException{
-        String sql = "SELECT * FROM `book_store` WHERE id = ?";
+        String sql = """
+                SELECT
+                    b.id AS book_id,
+                    b.title,
+                    b.year,
+                    b.publisher,
+                    b.edition,
+                    b.locale,
+                    a.id AS author_id,
+                    a.first_name,
+                    a.last_name
+                FROM book_store b
+                LEFT JOIN book_author ba ON b.id = ba.book_id
+                LEFT JOIN author_store a ON ba.author_id = a.id
+                WHERE b.id = ?
+                """;
         PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         ps.setLong(1, id);
         return ps;
