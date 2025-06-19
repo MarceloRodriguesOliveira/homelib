@@ -254,9 +254,30 @@ public class BookRepository {
 
     }
 
+    public void update(Book updatedBook){
+        try (Connection conn = ConnectionFactory.getConnection()){
+            conn.setAutoCommit(false);
+            try(PreparedStatement psDeleteAuthorBookLink = createPreparedStatementDeleteBookByIdFromAuthor(conn, updatedBook.getId());
+                PreparedStatement psUpdateBookInfo = createPreparedStatementUpdate(conn, updatedBook)){
+                psUpdateBookInfo.executeUpdate();
+                psDeleteAuthorBookLink.executeUpdate();
+
+                List<Long> authorIds = authorRepository.SaveAuthors(conn, updatedBook.getAuthors());
+                bookAuthorRepository.saveBookAuthorLink(conn, updatedBook.getId(), authorIds);
+
+                conn.commit();
+            }catch (SQLException e){
+                conn.rollback();
+                throw new RuntimeException("Failed to update book with authors", e);
+            }
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
 
 
-    public void update(Book book){
+    /*public void update(Book book){
         try(Connection conn = ConnectionFactory.getConnection();
             PreparedStatement ps = createPreparedStatementUpdate(conn, book)){
             ps.execute();
@@ -264,20 +285,20 @@ public class BookRepository {
         }catch (SQLException e){
             log.error("Erro ao atualizar o livro");
         }
-    }
+    }*/
 
 
     public static PreparedStatement createPreparedStatementUpdate(Connection conn, Book book) throws SQLException{
-        String sql = "UPDATE `book_store` SET `title` = ?, `publisher` = ?, `locale` = ?, `year` = ?, `edition` = ?, `updated_at` = ? WHERE (`id` = ?)";
+        String sql = "UPDATE book_store SET title = ?, publisher = ?, locale = ?, year = ?, edition = ?, updated_at = ? WHERE id = ?";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setString(1, book.getTitle());
         ps.setString(2, book.getPublisher());
         ps.setString(3, String.valueOf(book.getLocale()));
         ps.setInt(4, book.getYear());
         ps.setInt(5, book.getEdition());
-        ps.setLong(6, book.getId());
         LocalDateTime now = LocalDateTime.now();
-        ps.setTimestamp(7, Timestamp.valueOf(now));
+        ps.setTimestamp(6, Timestamp.valueOf(now));
+        ps.setLong(7, book.getId());
 
         return ps;
     }
