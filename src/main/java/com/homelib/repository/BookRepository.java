@@ -214,23 +214,47 @@ public class BookRepository {
     }
 
     public void deleteBookById(Long id){
-       try(Connection conn = ConnectionFactory.getConnection();
-           PreparedStatement ps = createPreparedStatementDeleteById(conn, id)
-          ){
-           log.info("Deleting...");
-           ps.execute();
+
+       try(Connection conn = ConnectionFactory.getConnection()){
+           conn.setAutoCommit(false);
+
+           try (PreparedStatement ps1 = createPreparedStatementDeleteById(conn, id);
+                PreparedStatement ps2 = createPreparedStatementDeleteBookByIdFromAuthor(conn, id)){
+
+               ps2.executeUpdate();
+               ps1.executeUpdate();
+               conn.commit();
+               log.info("Book and author link deleted successfully");
+           }catch (SQLException e){
+               conn.rollback();
+               log.error("rollback on deletebookById");
+
+           }
+
+
        }catch (SQLException e){
            log.error("Error while deleting register");
+           e.printStackTrace();
        }
 
     }
 
     public static PreparedStatement createPreparedStatementDeleteById(Connection conn, Long id) throws SQLException{
-        String sql = "DELETE FROM `book_store` WHERE (`id` = ?)";
+        String sql = "DELETE FROM book_store WHERE id = ?";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setLong(1, id);
         return ps;
     }
+
+    public PreparedStatement createPreparedStatementDeleteBookByIdFromAuthor(Connection conn, long bookId) throws SQLException {
+        String sql = "DELETE FROM book_author WHERE book_id = ?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setLong(1, bookId);
+        return ps;
+
+    }
+
+
 
     public void update(Book book){
         try(Connection conn = ConnectionFactory.getConnection();
@@ -244,7 +268,7 @@ public class BookRepository {
 
 
     public static PreparedStatement createPreparedStatementUpdate(Connection conn, Book book) throws SQLException{
-        String sql = "UPDATE `book_store` SET `title` = ?, `publisher` = ?, `locale` = ?, `year` = ?, `edition` = ? WHERE (`id` = ?)";
+        String sql = "UPDATE `book_store` SET `title` = ?, `publisher` = ?, `locale` = ?, `year` = ?, `edition` = ?, `updated_at` = ? WHERE (`id` = ?)";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setString(1, book.getTitle());
         ps.setString(2, book.getPublisher());
@@ -252,6 +276,8 @@ public class BookRepository {
         ps.setInt(4, book.getYear());
         ps.setInt(5, book.getEdition());
         ps.setLong(6, book.getId());
+        LocalDateTime now = LocalDateTime.now();
+        ps.setTimestamp(7, Timestamp.valueOf(now));
 
         return ps;
     }
