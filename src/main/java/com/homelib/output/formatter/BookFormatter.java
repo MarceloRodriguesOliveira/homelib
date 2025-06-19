@@ -3,6 +3,7 @@ package com.homelib.output.formatter;
 import com.homelib.entities.Author;
 import com.homelib.entities.Book;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -53,7 +54,7 @@ public class BookFormatter {
     }
 
     public static void formattedSingleBook(Book book){
-        System.out.printf("%s by %s\n", book.getTitle(), book.getAuthorsFullName(book.getAuthors()));
+        System.out.printf("%s (%d) by %s.%s (%s)\n", book.getTitle(),book.getYear() ,book.getAuthorsFullName(book.getAuthors()), book.getPublisher(), book.getLocale());
     }
 
     /*public static void formattedBookListFromCsv(List<Book> books){
