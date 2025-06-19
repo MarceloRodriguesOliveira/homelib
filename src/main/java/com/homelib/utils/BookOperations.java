@@ -30,13 +30,13 @@ public class BookOperations {
 
     public void inputId(){
         int id = bookInputReader.readId();
-        Optional<Book> bookFromDb = bookService.findById(id);
+        Optional<Book> bookFromDb = bookService.findById((long) id);
         if(bookFromDb.isEmpty()){
             System.out.println("Não existe livro com essa identificação");
             return;
         }
         Book book = bookFromDb.get();
-        System.out.println(book);
+        BookFormatter.formattedSingleBook(book);
 
     }
 
@@ -52,11 +52,11 @@ public class BookOperations {
 
     public void deleteBook(){
         int id = bookInputReader.readIdDelete();
-        bookService.deleteBookById(id);
+        bookService.deleteBookById((long) id);
     }
 
     public void updateBook(){
-        int id = bookInputReader.readIdUpdate();
+        Long id = bookInputReader.readIdUpdate();
         var output = bookService.findById(id);
 
         if (output.isEmpty()){
@@ -75,7 +75,7 @@ public class BookOperations {
             return;
         }
         List<Book> bookList = listFromCsv.get();
-        BookFormatter.formattedBookListFromCsv(bookList);
+        //BookFormatter.formattedBookListFromCsv(bookList);
     }
 
     public void exportListAsCsv(){
