@@ -6,6 +6,7 @@ import com.homelib.enums.PublisherLocale;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,6 +63,18 @@ public class Book {
                 .map(a -> a.getFirstName() + " " + a.getLastName())
                 .collect(Collectors.joining(", "));
 
+    }
+
+    public String getAuthorInitials(List<Author> authors){
+        return authors.stream()
+                .map(author ->{
+                    String[] firstNameParts = author.getFirstName().split("\\s+");
+                    String initials = Arrays.stream(firstNameParts)
+                            .map(p -> p.substring(0,1).toUpperCase())
+                            .collect(Collectors.joining());
+                    return initials + " " + author.getLastName();
+                })
+                .collect(Collectors.joining(", "));
     }
 
     public static final class BookBuilder{

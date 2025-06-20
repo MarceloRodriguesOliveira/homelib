@@ -46,7 +46,7 @@ public class BookFormatter {
         System.out.print(
                 "+----------------------------+-------------------------------+------+---------+--------------------------------------+\n");
         for (Book book: books){
-            String authorNames = book.getAuthorsFullName(book.getAuthors());
+            String authorNames = book.getAuthorInitials(book.getAuthors());
             System.out.printf("| %-26s | %-46s | %-4d | %-7s | %-36s |\n", book.getTitle(), authorNames, book.getYear(), book.getEdition(), book.getId());
 
         }
