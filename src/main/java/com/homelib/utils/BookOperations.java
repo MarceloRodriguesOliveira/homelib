@@ -75,7 +75,7 @@ public class BookOperations {
             return;
         }
         List<Book> bookList = listFromCsv.get();
-        //BookFormatter.formattedBookListFromCsv(bookList);
+        BookFormatter.formattedBookListFromCsv(bookList);
     }
 
     public void exportListAsCsv(){
