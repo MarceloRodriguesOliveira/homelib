@@ -26,10 +26,10 @@ public class OutputFileWriterHelper {
         if(returnVal == JFileChooser.APPROVE_OPTION){
             String fullPath = chooser.getSelectedFile().getAbsolutePath() + File.separator + "exportedList.csv";
             try(FileWriter writer = new FileWriter(fullPath)){
-                for(Book book: books){
+                /*for(Book book: books){
                     String csvString = BookFormatter.formatAsCsv(book);
                     writer.write(csvString + "\n");
-                }
+                }*/
             }catch (IOException e){
                 System.out.println("Could not proceed with operation");
             }
