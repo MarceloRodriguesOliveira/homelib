@@ -31,6 +31,10 @@ public class BookFormatter {
         String[] fields = csvSplit.split(line);
         String[] names = splitNames.split(fields[5]);
 
+        if(line.length() < 6){
+            throw new IllegalArgumentException("line format not supported. Check FAQ for details.");
+        }
+
         Arrays.stream(names).map(a->{
             int lastSpace = a.lastIndexOf(" ");
             if(lastSpace == -1){
@@ -42,16 +46,6 @@ public class BookFormatter {
             return new Author(firstname, lastname);
         }).forEachOrdered(authorListFromLine::add);
 
-        /*for (String name : names) {
-            int lastSpace = name.lastIndexOf(" ");
-            if(lastSpace == -1){
-                throw new IllegalArgumentException("Linha mal formatada");
-            }
-            String lastname = name.substring(lastSpace+1).trim();
-            String firstname = name.substring(0, lastSpace).trim();
-            Author authorFromLine = new Author(firstname, lastname);
-            authorListFromLine.add(authorFromLine);
-        }*/
 
         return Book.BookBuilder
                 .builder()
