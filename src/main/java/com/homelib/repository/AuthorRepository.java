@@ -69,6 +69,26 @@ public class AuthorRepository {
         return Optional.empty();
     }
 
+    public List<Long> findMultipleAuthorsById(Connection conn, List<Author> authors){
+        List<Long> ids = new ArrayList<>();
+        String sql = "SELECT id FROM author_store WHERE first_name = ? AND last_name = ?";
+        try(PreparedStatement ps = conn.prepareStatement(sql)){
+            for (Author author:authors){
+                ps.setString(1, author.getFirstName());
+                ps.setString(2, author.getLastName());
+
+                try(ResultSet rs = ps.executeQuery()){
+                    if(rs.next()){
+                        ids.add(rs.getLong("id"));
+                    }
+                }
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return ids;
+    }
+
     private static PreparedStatement createPreparedStatementSaveSingleAuthor(Connection conn, Author author) throws SQLException {
         String sql = "INSERT OR IGNORE INTO author_store (first_name, last_name) VALUES (?, ?)";
         PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -88,5 +108,10 @@ public class AuthorRepository {
         ps.setString(1, author.getFirstName());
         ps.setString(2, author.getLastName());
         return ps;
+    }
+
+    private static PreparedStatement createPreparedStatementFindAuthorByNameBatch(Connection conn, Author author) throws SQLException{
+        String sql = "SELECT id FROM author_store WHERE first_name = ? AND last_name = ?";
+        return conn.prepareStatement(sql);
     }
 }
