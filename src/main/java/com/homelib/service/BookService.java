@@ -49,6 +49,6 @@ public class BookService {
     }
 
     public void saveBookInBatch(List<Book> importedList){
-        bookRepository.saveFromImportedList(importedList);
+        bookRepository.saveBatchAndLinkAuthor(importedList);
     }
 }
