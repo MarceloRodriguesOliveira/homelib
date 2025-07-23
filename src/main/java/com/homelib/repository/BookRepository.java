@@ -13,8 +13,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -213,6 +216,31 @@ public class BookRepository {
         return ps;
     }
 
+    public long findBookIdByExactTitle(Connection conn, Book book){
+        Map<Long, Book> bookMap = new LinkedHashMap<>();
+        try (PreparedStatement ps = createPreparedStatementStrictTitleSearch(conn, book.getTitle());
+            ResultSet rs = ps.executeQuery()){
+
+            if(rs.next()){
+                return rs.getLong(1);
+            }
+
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    public static PreparedStatement createPreparedStatementStrictTitleSearch(Connection conn, String title) throws SQLException {
+        String sql = "SELECT id from book_store WHERE title = ?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setString(1, title);
+        return ps;
+
+    }
+
     public void deleteBookById(Long id){
 
        try(Connection conn = ConnectionFactory.getConnection()){
@@ -277,16 +305,6 @@ public class BookRepository {
     }
 
 
-    /*public void update(Book book){
-        try(Connection conn = ConnectionFactory.getConnection();
-            PreparedStatement ps = createPreparedStatementUpdate(conn, book)){
-            ps.execute();
-
-        }catch (SQLException e){
-            log.error("Erro ao atualizar o livro");
-        }
-    }*/
-
 
     public static PreparedStatement createPreparedStatementUpdate(Connection conn, Book book) throws SQLException{
         String sql = "UPDATE book_store SET title = ?, publisher = ?, locale = ?, year = ?, edition = ?, updated_at = ? WHERE id = ?";
@@ -303,30 +321,76 @@ public class BookRepository {
         return ps;
     }
 
-    public void saveFromImportedList(List<Book> importedBookList){
-        try(Connection conn = ConnectionFactory.getConnection();
-            PreparedStatement ps = createPreparedStatementSaveBatchFromFile(conn, importedBookList)){
+    public void saveBatchAndLinkAuthor(List<Book> importedList){
+        try (Connection conn = ConnectionFactory.getConnection()){
             conn.setAutoCommit(false);
-            ps.executeBatch();
-            conn.commit();
-        }catch (SQLException e){
-            System.err.println(e);
-        }
+            try {
+                for (Book book : importedList){
+                    boolean inserted = saveBookWithCheck(conn, book);
+                    if(!inserted){
+                        log.warn("Book '{}' was a duplicate. Skipping author/linking steps", book.getTitle());
+                        continue;
+                    }
 
+                    List<Long> idsFromAuthor = authorRepository.SaveAuthors(conn, book.getAuthors());
+                    bookAuthorRepository.saveBookAuthorLink(conn, book.getId(), idsFromAuthor);
+                }
+                conn.commit();
+            }catch (SQLException e){
+                conn.rollback();
+                throw new RuntimeException("Error during batch import ", e);
+            }
+
+        }catch (SQLException e){
+            log.error("Error on database");
+        }
     }
 
-    private static PreparedStatement createPreparedStatementSaveBatchFromFile(Connection conn, List<Book> bookList_csv) throws SQLException {
-        String sql = "INSERT INTO `book_store` (`title`, `publisher`, `locale`, `year`, `edition`) VALUES (?, ?, ?, ?, ?)";
-        PreparedStatement ps = conn.prepareStatement(sql);
 
-        for(Book book: bookList_csv){
+    public boolean saveBookWithCheck(Connection conn, Book book) throws SQLException {
+        String sql = "INSERT OR IGNORE INTO `book_store` (`title`, `publisher`, `locale`, `year`, `edition`, `created_at`, `updated_at`) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        try(PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
+            LocalDateTime now = LocalDateTime.now();
             ps.setString(1, book.getTitle());
             ps.setString(2, book.getPublisher());
             ps.setString(3, String.valueOf(book.getLocale()));
             ps.setInt(4, book.getYear());
             ps.setInt(5, book.getEdition());
-            ps.addBatch();
+            ps.setTimestamp(6, Timestamp.valueOf(now));
+            ps.setTimestamp(7, Timestamp.valueOf(now));
+
+            int affectedRow = ps.executeUpdate();
+            if (affectedRow == 0){
+                return false;
+            }
+
+            try(ResultSet rs = ps.getGeneratedKeys()){
+                if (rs.next()){
+                    book.setId(rs.getLong(1));
+                }else {
+                    throw new SQLException("Failed to retrieve id for book: " + book.getTitle());
+                }
+
+
+            }
+
+            return true;
+
         }
+    }
+
+    private static PreparedStatement createPreparedStatementSaveBatchFromFile(Connection conn, Book book) throws SQLException {
+        String sql = "INSERT OR IGNORE INTO `book_store` (`title`, `publisher`, `locale`, `year`, `edition`, `created_at`, `updated_at`) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        LocalDateTime now = LocalDateTime.now();
+        ps.setString(1, book.getTitle());
+        ps.setString(2, book.getPublisher());
+        ps.setString(3, String.valueOf(book.getLocale()));
+        ps.setInt(4, book.getYear());
+        ps.setInt(5, book.getEdition());
+        ps.setTimestamp(6, Timestamp.valueOf(now));
+        ps.setTimestamp(7, Timestamp.valueOf(now));
 
         return ps;
 
