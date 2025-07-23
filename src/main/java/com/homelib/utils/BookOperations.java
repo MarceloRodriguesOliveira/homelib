@@ -29,7 +29,7 @@ public class BookOperations {
     }
 
     public void inputId(){
-        int id = bookInputReader.readId();
+        long id = bookInputReader.readId();
         Optional<Book> bookFromDb = bookService.findById((long) id);
         if(bookFromDb.isEmpty()){
             System.out.println("Não existe livro com essa identificação");
@@ -51,7 +51,7 @@ public class BookOperations {
     }
 
     public void deleteBook(){
-        int id = bookInputReader.readIdDelete();
+        long id = bookInputReader.readIdDelete();
         bookService.deleteBookById((long) id);
     }
 
