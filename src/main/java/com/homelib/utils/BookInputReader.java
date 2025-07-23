@@ -8,8 +8,8 @@ import java.util.Scanner;
 
 public interface BookInputReader {
     Book readBook();
-    int readId();
+    long readId();
     String listBooks();
-    int readIdDelete();
-    Long readIdUpdate();
+    long readIdDelete();
+    long readIdUpdate();
 }
