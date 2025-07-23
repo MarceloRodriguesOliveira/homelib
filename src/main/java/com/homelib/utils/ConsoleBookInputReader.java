@@ -56,7 +56,7 @@ public class ConsoleBookInputReader implements BookInputReader {
     }
 
     @Override
-    public int readId() {
+    public long readId() {
         System.out.println("Type the id of the book: ");
         return Integer.parseInt(SCANNER.nextLine());
     }
@@ -68,13 +68,13 @@ public class ConsoleBookInputReader implements BookInputReader {
     }
 
     @Override
-    public int readIdDelete() {
+    public long readIdDelete() {
         System.out.println("Digite o id do livro que deseja apagar");
         return Integer.parseInt(SCANNER.nextLine());
     }
 
     @Override
-    public Long readIdUpdate() {
+    public long readIdUpdate() {
         System.out.println("Digite a id do livro que deseja atualizar");
         return Long.parseLong(SCANNER.nextLine());
     }
