@@ -1,10 +1,12 @@
 package com.homelib.utils;
 
+import com.homelib.entities.Author;
 import com.homelib.entities.Book;
 import com.homelib.output.formatter.BookFormatter;
 import com.homelib.output.io.FileReaderHelper;
 import com.homelib.output.io.OutputFileWriterHelper;
 import com.homelib.service.BookService;
+import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +21,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +29,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@Log4j2
 @ExtendWith(MockitoExtension.class)
 class BookOperationsTest {
     @Mock
@@ -43,7 +47,7 @@ class BookOperationsTest {
     ArgumentCaptor<Book> bookArgumentCaptor;
 
     @Captor
-    ArgumentCaptor<Integer> idArgumentCaptor;
+    ArgumentCaptor<Long> idArgumentCaptor;
 
     @Captor
     ArgumentCaptor<String> titleArgumentCaptor;
@@ -57,15 +61,18 @@ class BookOperationsTest {
 
     @BeforeEach
     void setUp(){
+        Author authorMocked1 = new Author("Jane", "Doe");
+        Author authorMocked2 = new Author("John", "Doe");
+        List<Author> authorList = new ArrayList<>(List.of(authorMocked1, authorMocked2));
         book = Book.BookBuilder
                 .builder()
                 .title("title")
-                .firstNameAuthor("John")
-                .lastNameAuthor("Doe")
+                .authors(authorList)
                 .year(1970)
                 .edition(1)
                 .build();
-
+        long anyId = 42L;
+        book.setId(anyId);
         bookFormatterMockedStatic = Mockito.mockStatic(BookFormatter.class);
         bookList = List.of(book);
     }
@@ -95,7 +102,7 @@ class BookOperationsTest {
         @DisplayName("Should read id value and return book if id matches")
         void shouldReadIdValueAndReturnBookValueOnIdMatch(){
             Optional<Book> bookFromDb = Optional.of(book);
-            int anyId = 42;
+            long anyId = 42;
             doReturn(anyId).when(bookInputReader).readId();
             doReturn(bookFromDb).when(bookService).findById(anyId);
 
@@ -109,9 +116,9 @@ class BookOperationsTest {
         @Test
         @DisplayName("Should return nothing when Optional is Empty")
         void shouldReturnNothingWhenOptionalIsEmpty(){
-            int anyId = 42;
+            long anyId = 42;
             doReturn(anyId).when(bookInputReader).readId();
-            doReturn(Optional.empty()).when(bookService).findById(anyInt());
+            doReturn(Optional.empty()).when(bookService).findById(anyLong());
 
             bookOperations.inputId();
 
@@ -163,9 +170,9 @@ class BookOperationsTest {
         @Test
         @DisplayName("Should delete book given id")
         void shouldDeleteBookGivenId(){
-            int anyId = 42;
+            long anyId = 42;
             doReturn(anyId).when(bookInputReader).readIdDelete();
-            doNothing().when(bookService).deleteBookById(anyInt());
+            doNothing().when(bookService).deleteBookById(anyLong());
 
             bookOperations.deleteBook();
 
@@ -181,12 +188,12 @@ class BookOperationsTest {
         @Test
         @DisplayName("Should update book if id exists")
         void shouldUpdateBookIfIdExists(){
-            int anyId = 42;
+            long anyId = 42;
             Optional<Book> bookFromDb = Optional.of(book);
-            assertEquals(0, book.getId());
+            assertEquals(anyId, book.getId());
 
             doReturn(anyId).when(bookInputReader).readIdUpdate();
-            doReturn(bookFromDb).when(bookService).findById(anyInt());
+            doReturn(bookFromDb).when(bookService).findById(anyLong());
             doReturn(book).when(bookInputReader).readBook();
 
             bookOperations.updateBook();
@@ -204,10 +211,10 @@ class BookOperationsTest {
         @Test
         @DisplayName("Should not update book if id does not exist")
         void shouldNotUpdateBookIfIdDoesNotExist(){
-            int anyId = 42;
+            long anyId = 42;
             Optional<Book> bookFromDb = Optional.empty();
             doReturn(anyId).when(bookInputReader).readIdUpdate();
-            doReturn(Optional.empty()).when(bookService).findById(anyInt());
+            doReturn(Optional.empty()).when(bookService).findById(anyLong());
 
             bookOperations.updateBook();
 

@@ -1,5 +1,6 @@
 package com.homelib.service;
 
+import com.homelib.entities.Author;
 import com.homelib.entities.Book;
 import com.homelib.repository.BookRepository;
 import com.homelib.utils.BookInputReader;
@@ -42,23 +43,27 @@ class BookServiceTest {
     private ArgumentCaptor<String> titleArgumentCaptor;
 
     @Captor
-    private ArgumentCaptor<Integer> idArgumentCaptor;
+    private ArgumentCaptor<Long> idArgumentCaptor;
 
     private Book book;
+    private List<Author> authors = new ArrayList<>();
 
     private List<Book> importedBooks;
 
     @BeforeEach
     void setUp(){
+        Author authorMocked1 = new Author("Jane", "Doe");
+        Author authorMocked2 = new Author("John", "Doe");
+        authors = List.of(authorMocked1, authorMocked2);
         book = Book.BookBuilder
                     .builder()
                     .title("title")
-                    .firstNameAuthor("John")
-                    .lastNameAuthor("Doe")
+                    .authors(authors)
                     .year(1970)
                     .edition(1)
                     .build();
-
+        Long anyId = 42L;
+        book.setId(anyId);
         importedBooks = List.of(book);
     }
 
@@ -68,7 +73,7 @@ class BookServiceTest {
         @DisplayName("Should create a new book class")
         void shouldCreateNewBook(){
             //Arrange
-            doReturn(book).when(bookRepository).save(any(Book.class));
+            doReturn(book).when(bookRepository).SaveWithAuthors(book);
 
 
             //Act
@@ -77,19 +82,19 @@ class BookServiceTest {
 
             //Assert
             assertNotNull(output);
-            verify(bookRepository).save(bookArgumentCaptor.capture());
+            verify(bookRepository).SaveWithAuthors(bookArgumentCaptor.capture());
             var bookCaptured = bookArgumentCaptor.getValue();
             assertEquals(book.getTitle(), bookCaptured.getTitle());
             assertEquals(book.getId(),  bookCaptured.getId());
-            assertEquals(book.getFirstNameAuthor(),  bookCaptured.getFirstNameAuthor());
-            assertEquals(book.getLastNameAuthor(),  bookCaptured.getLastNameAuthor());
+
+            assertIterableEquals(book.getAuthors(), bookCaptured.getAuthors());
 
         }
 
         @Test
         @DisplayName("Should launch exception when error occurs")
         void shouldThrowExceptionWhenErrorOccurs(){
-            doThrow(new RuntimeException()).when(bookRepository).save(any());
+            doThrow(new RuntimeException()).when(bookRepository).SaveWithAuthors(any());
 
             assertThrows(RuntimeException.class, ()-> bookService.createNewBook(book));
         }
@@ -131,7 +136,7 @@ class BookServiceTest {
         @DisplayName("Should return a Optional book object when id matches")
         void shouldReturnOptionalWhenIdMatches(){
             Optional<Book> bookFromDb = Optional.of(book);
-            doReturn(bookFromDb).when(bookRepository).findById(anyInt());
+            doReturn(bookFromDb).when(bookRepository).findById(book.getId());
 
             var output = bookService.findById(book.getId());
 
@@ -145,7 +150,7 @@ class BookServiceTest {
         @Test
         @DisplayName("Should return empty optional when there is no matching id")
         void shouldReturnEmptyOptionalWhenThereIsNoMatchingId(){
-            doReturn(Optional.empty()).when(bookRepository).findById(anyInt());
+            doReturn(Optional.empty()).when(bookRepository).findById(anyLong());
 
             var output = bookService.findById(book.getId());
 
@@ -158,14 +163,14 @@ class BookServiceTest {
     }
 
     @Nested
-    class deleteBookByiId{
+    class deleteBookById{
         @Test
         @DisplayName("Should delete book when book exists")
         void shouldDeleteBookWhenBookExists(){
             //Arrange
-            int anyId = 42;
-            doReturn(Optional.of(book)).when(bookRepository).findById(anyInt());
-            doNothing().when(bookRepository).deleteBookById(anyInt());
+            long anyId = 42;
+            doReturn(Optional.of(book)).when(bookRepository).findById(anyLong());
+            doNothing().when(bookRepository).deleteBookById(anyLong());
 
             //Act
             bookService.deleteBookById(anyId);
@@ -185,16 +190,16 @@ class BookServiceTest {
         @Test
         @DisplayName("Should not delete book when book does not exist")
         void shouldNotDeleteBookIfBookDoesNotExists(){
-            int anyId = 40;
-            doReturn(Optional.empty()).when(bookRepository).findById(anyInt());
+            long anyId = 40;
+            doReturn(Optional.empty()).when(bookRepository).findById(anyLong());
 
 
             bookService.deleteBookById(anyId);
 
             verify(bookRepository, times(1)).findById(idArgumentCaptor.capture());
-            int capturedId = idArgumentCaptor.getValue();
+            long capturedId = idArgumentCaptor.getValue();
             assertEquals(anyId, capturedId);
-            verify(bookRepository, never()).deleteBookById(anyInt());
+            verify(bookRepository, never()).deleteBookById(anyLong());
 
         }
     }
@@ -204,7 +209,7 @@ class BookServiceTest {
         @Test
         @DisplayName("Should update values if book exists")
         void shouldUpdateBookIfBookExists(){
-            int anyId = 42;
+            long anyId = 42;
             book.setId(anyId);
 
             bookService.updateBook(book);
@@ -223,7 +228,7 @@ class BookServiceTest {
         void shouldSaveBatchDataRetrievedFromCsvFile(){
             bookService.saveBookInBatch(importedBooks);
 
-            verify(bookRepository).saveFromImportedList(importedBooks);
+            verify(bookRepository).saveBatchAndLinkAuthor(importedBooks);
         }
     }
 
